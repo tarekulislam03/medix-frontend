@@ -128,11 +128,13 @@ const POS: React.FC = () => {
             const res = await api.post('/billing/bills', payload);
             const billId = res.data.data.id;
 
-            // Open print preview in new window using HTML endpoint
+            // Open print dialog using hidden iframe
             try {
-                // Use fetch API directly to get raw HTML (axios can have issues with responseType)
                 const token = localStorage.getItem('token');
-                const htmlResponse = await fetch(`/api/v1/printing/bills/${billId}/html?size=80mm`, {
+                // Get configured bill width
+                const savedWidth = localStorage.getItem('bill_width') || '80mm';
+
+                const htmlResponse = await fetch(`/api/v1/printing/bills/${billId}/html?size=${savedWidth}`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -145,21 +147,47 @@ const POS: React.FC = () => {
 
                 const htmlContent = await htmlResponse.text();
 
-                // Open a new window and write the HTML content
-                const printWindow = window.open('', '_blank', 'width=400,height=600');
-                if (printWindow) {
-                    printWindow.document.write(htmlContent);
-                    printWindow.document.close();
-                    // Focus the new window
-                    printWindow.focus();
-                    toast.success('Bill created successfully!');
-                } else {
-                    console.error('Popup was blocked');
-                    toast.success('Bill created! Popup was blocked. Please allow popups to print.');
+                // Create hidden iframe for printing
+                const iframe = document.createElement('iframe');
+                iframe.style.position = 'fixed';
+                iframe.style.right = '0';
+                iframe.style.bottom = '0';
+                iframe.style.width = '0px';
+                iframe.style.height = '0px';
+                iframe.style.border = '0';
+                document.body.appendChild(iframe);
+
+                const doc = iframe.contentWindow?.document;
+                if (doc) {
+                    doc.open();
+                    doc.write(htmlContent);
+                    // Add script to print and then remove iframe
+                    // We use extensive timeout to ensure print dialog has time to open/process before removal
+                    // Although removal might be blocked until dialog closes in some browsers
+                    doc.write(`
+                        <script>
+                            window.onload = function() {
+                                window.print();
+                                // Optional: notify parent or close?
+                                // The iframe will remain in DOM until refreshed or we remove it.
+                                // It's safer to remove it after a delay.
+                            }
+                        </script>
+                    `);
+                    doc.close();
+
+                    // Cleanup iframe after 1 minute (sufficient time for user to print)
+                    setTimeout(() => {
+                        if (document.body.contains(iframe)) {
+                            document.body.removeChild(iframe);
+                        }
+                    }, 60000);
+
+                    toast.success('Bill created! Printing...');
                 }
             } catch (printError: any) {
                 console.error('Print generation failed:', printError);
-                toast.success('Bill created successfully! Print preview failed.');
+                toast.error('Bill created, but print failed.');
             }
 
             // Reset

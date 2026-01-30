@@ -19,12 +19,18 @@ const Settings: React.FC = () => {
         newPassword: '',
         confirmPassword: '',
     });
+    const [billWidth, setBillWidth] = useState<'58mm' | '90mm'>('90mm');
     const [loading, setLoading] = useState(false);
     const [passwordLoading, setPasswordLoading] = useState(false);
     const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
     useEffect(() => {
         fetchStoreSettings();
+        // Load bill width
+        const savedWidth = localStorage.getItem('bill_width');
+        if (savedWidth === '58mm' || savedWidth === '90mm') {
+            setBillWidth(savedWidth as any);
+        }
     }, []);
 
     const fetchStoreSettings = async () => {
@@ -60,6 +66,10 @@ const Settings: React.FC = () => {
         e.preventDefault();
         setLoading(true);
         setMessage(null);
+
+        // Save bill width
+        localStorage.setItem('bill_width', billWidth);
+
         try {
             await api.put('/dashboard/store', storeSettings);
             setMessage({ type: 'success', text: 'Store settings updated successfully!' });
@@ -206,6 +216,37 @@ const Settings: React.FC = () => {
                 </div>
             </form>
 
+
+            {/* Bill Configuration */}
+            <div className="bg-white shadow rounded-lg p-6">
+                <h2 className="text-lg font-medium text-gray-900 mb-4">Bill Configuration</h2>
+                <p className="text-gray-500 mb-4">Select the print width for your thermal printer.</p>
+                <div className="flex gap-6">
+                    <label className="flex items-center gap-3 cursor-pointer">
+                        <input
+                            type="radio"
+                            name="billWidth"
+                            value="58mm"
+                            checked={billWidth === '58mm'}
+                            onChange={(e) => setBillWidth(e.target.value as any)}
+                            className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                        />
+                        <span className="text-gray-700">58mm (Small)</span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                        <input
+                            type="radio"
+                            name="billWidth"
+                            value="90mm"
+                            checked={billWidth === '90mm'}
+                            onChange={(e) => setBillWidth(e.target.value as any)}
+                            className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                        />
+                        <span className="text-gray-700">90mm (Large)</span>
+                    </label>
+                </div>
+            </div>
+
             {/* Password Change */}
             <form onSubmit={handleChangePassword} className="bg-white shadow rounded-lg p-6">
                 <h2 className="text-lg font-medium text-gray-900 mb-4">Account Security</h2>
@@ -276,7 +317,7 @@ const Settings: React.FC = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 
