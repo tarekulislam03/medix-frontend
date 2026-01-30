@@ -10,6 +10,16 @@ import toast from 'react-hot-toast';
 import { useConfirmation } from '@/context/ConfirmationContext';
 import AddCustomerModal from '@/components/customers/AddCustomerModal';
 
+// Helper to calculate item totals
+const recalculateItem = (item: CartItem) => {
+    const gross = item.cartPrice * item.cartQuantity;
+    const discount = (gross * item.discountPercent) / 100;
+    const taxable = gross - discount;
+    const tax = (taxable * item.taxPercent) / 100;
+    item.taxAmount = tax;
+    item.totalAmount = taxable + tax;
+};
+
 const POS: React.FC = () => {
     const { confirm } = useConfirmation();
     const [cart, setCart] = useState<CartItem[]>([]);
@@ -47,7 +57,7 @@ const POS: React.FC = () => {
         return { subtotal, totalTax, totalDiscount };
     }, [cart]);
 
-    const handleSelectProduct = (product: Product) => {
+    const handleSelectProduct = React.useCallback((product: Product) => {
         setCart(prev => {
             const existing = prev.findIndex(p => p.id === product.id);
             if (existing >= 0) {
@@ -57,49 +67,56 @@ const POS: React.FC = () => {
                 // Check stock?
                 if (item.cartQuantity < item.quantity) {
                     item.cartQuantity += 1;
-                    recalculateItem(item);
+                    const gross = item.cartPrice * item.cartQuantity;
+                    const discount = (gross * item.discountPercent) / 100;
+                    const taxable = gross - discount;
+                    const tax = (taxable * item.taxPercent) / 100;
+                    item.taxAmount = tax;
+                    item.totalAmount = taxable + tax;
                 } else {
                     toast.error(`Max stock reached for ${item.name}`);
                 }
                 return updated;
             } else {
                 // Add new
+                const gross = Number(product.sellingPrice) * 1;
+                const discount = 0;
+                const taxable = gross - discount;
+                const tax = (taxable * (Number(product.taxPercent) || 0)) / 100;
+
                 const newItem: CartItem = {
                     ...product,
                     cartQuantity: 1,
                     cartPrice: Number(product.sellingPrice),
                     discountPercent: 0,
-                    taxAmount: 0, // calc
-                    totalAmount: 0, // calc
+                    taxAmount: tax,
+                    totalAmount: taxable + tax,
                 };
-                recalculateItem(newItem);
                 return [...prev, newItem];
             }
         });
-    };
+    }, []); // Dependencies empty as setCart is stable
 
-    const recalculateItem = (item: CartItem) => {
-        const gross = item.cartPrice * item.cartQuantity;
-        const discount = (gross * item.discountPercent) / 100;
-        const taxable = gross - discount;
-        const tax = (taxable * item.taxPercent) / 100;
-        item.taxAmount = tax;
-        item.totalAmount = taxable + tax;
-    };
-
-    const handleUpdateCartItem = (index: number, updates: Partial<CartItem>) => {
+    const handleUpdateCartItem = React.useCallback((index: number, updates: Partial<CartItem>) => {
         setCart(prev => {
             const updated = [...prev];
             const item = { ...updated[index], ...updates };
-            recalculateItem(item);
+
+            const gross = item.cartPrice * item.cartQuantity;
+            const discount = (gross * item.discountPercent) / 100;
+            const taxable = gross - discount;
+            const tax = (taxable * item.taxPercent) / 100;
+            item.taxAmount = tax;
+            item.totalAmount = taxable + tax;
+
             updated[index] = item;
             return updated;
         });
-    };
+    }, []);
 
-    const handleRemoveItem = (index: number) => {
+    const handleRemoveItem = React.useCallback((index: number) => {
         setCart(prev => prev.filter((_, i) => i !== index));
-    };
+    }, []);
 
     const handleCheckout = async () => {
         if (cart.length === 0) return;
@@ -130,22 +147,15 @@ const POS: React.FC = () => {
 
             // Open print dialog using hidden iframe
             try {
-                const token = localStorage.getItem('token');
                 // Get configured bill width
                 const savedWidth = localStorage.getItem('bill_width') || '80mm';
 
-                const htmlResponse = await fetch(`/api/v1/printing/bills/${billId}/html?size=${savedWidth}`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
+                const htmlResponse = await api.get(`/printing/bills/${billId}/html`, {
+                    params: { size: savedWidth },
+                    responseType: 'text'
                 });
 
-                if (!htmlResponse.ok) {
-                    const errorData = await htmlResponse.json().catch(() => ({}));
-                    throw new Error(errorData.message || `HTTP error ${htmlResponse.status}`);
-                }
-
-                const htmlContent = await htmlResponse.text();
+                const htmlContent = htmlResponse.data;
 
                 // Create hidden iframe for printing
                 const iframe = document.createElement('iframe');
@@ -269,10 +279,10 @@ const POS: React.FC = () => {
         <div className="h-[calc(100vh-6rem)] flex flex-col gap-4">
             {/* Top Bar: Search & Customer */}
             <div className="flex flex-col sm:flex-row gap-4">
-                <div className="flex-1">
+                <div className="flex-1" id="pos-product-search">
                     <ProductSearch onSelectProduct={handleSelectProduct} />
                 </div>
-                <div className="flex-1">
+                <div className="flex-1" id="pos-customer-select">
                     <CustomerSelect
                         selectedCustomer={selectedCustomer}
                         onSelectCustomer={handleSelectCustomer}
@@ -290,7 +300,7 @@ const POS: React.FC = () => {
             </div>
 
             {/* Main Content: Cart & Summary */}
-            <div className="flex flex-col lg:flex-row gap-4 flex-1 overflow-hidden">
+            <div className="flex flex-col lg:flex-row gap-4 flex-1 overflow-hidden" id="pos-cart-section">
                 {/* Cart Table */}
                 <div className="flex-[2] overflow-hidden min-h-[300px]">
                     <Cart
@@ -301,7 +311,7 @@ const POS: React.FC = () => {
                 </div>
 
                 {/* Sidebar Summary */}
-                <div className="flex-1 min-w-[300px] overflow-auto">
+                <div className="flex-1 min-w-[300px] overflow-auto" id="pos-checkout-section">
                     <BillSummary
                         subtotal={subtotal}
                         totalTax={totalTax}

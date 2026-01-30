@@ -173,6 +173,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onSu
                                             <div className="col-span-1 md:col-span-2">
                                                 <label className="block text-sm font-medium text-gray-700">Product Name *</label>
                                                 <input
+                                                    id="product-name-input"
                                                     type="text"
                                                     name="name"
                                                     required
@@ -299,6 +300,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onSu
                                             <div>
                                                 <label className="block text-sm font-medium text-gray-700">MRP *</label>
                                                 <input
+                                                    id="product-mrp-input"
                                                     type="number"
                                                     name="mrp"
                                                     required
@@ -327,6 +329,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onSu
                                             <div>
                                                 <label className="block text-sm font-medium text-gray-700">Opening Stock *</label>
                                                 <input
+                                                    id="product-stock-input"
                                                     type="number"
                                                     name="quantity"
                                                     required
@@ -379,9 +382,10 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onSu
 
                                         <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 -mx-6 -mb-4 mt-6">
                                             <button
+                                                id="save-product-btn"
                                                 type="submit"
                                                 disabled={loading}
-                                                className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto disabled:opacity-50"
+                                                className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-50 sm:ml-3 sm:w-auto disabled:opacity-50"
                                             >
                                                 {loading ? 'Saving...' : 'Save Product'}
                                             </button>

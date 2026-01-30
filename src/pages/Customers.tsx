@@ -98,6 +98,7 @@ const Customers: React.FC = () => {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <h1 className="text-2xl font-bold text-gray-900">Customers</h1>
                 <button
+                    id="add-customer-btn"
                     onClick={() => {
                         setEditingCustomer(null);
                         setIsAddModalOpen(true);
@@ -129,7 +130,7 @@ const Customers: React.FC = () => {
             </div>
 
             {/* Customers Table */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden" id="customers-table-container">
                 <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-50">

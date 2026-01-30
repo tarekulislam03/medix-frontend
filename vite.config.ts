@@ -13,6 +13,20 @@ export default defineConfig({
     },
   },
 
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom', 'axios', 'clsx', 'tailwind-merge', 'react-hot-toast'],
+          charts: ['recharts'],
+          icons: ['@heroicons/react'],
+          ui: ['@headlessui/react', 'framer-motion']
+        }
+      }
+    },
+    chunkSizeWarningLimit: 1000
+  },
+
   server: {
     host: true,                 // ✅ allow external access
     allowedHosts: true,        // ✅ fix ngrok blocked error

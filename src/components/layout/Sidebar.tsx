@@ -75,6 +75,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
                                 <NavLink
                                     key={item.name}
                                     to={item.href}
+                                    id={`nav-${item.name.toLowerCase().replace(/[^a-z0-9]/g, '-')}`}
                                     className={({ isActive }) =>
                                         clsx(
                                             'group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors',
@@ -148,6 +149,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
                                 leaveTo="transform opacity-0 scale-95 translate-y-2"
                             >
                                 <Menu.Items className="absolute bottom-full left-0 mb-2 w-full origin-bottom-left rounded-lg bg-white shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none divide-y divide-gray-100 overflow-hidden z-50">
+
                                     <div className="px-1 py-1">
                                         <Menu.Item>
                                             {({ active }) => (

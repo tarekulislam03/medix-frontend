@@ -114,6 +114,7 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({ isOpen, onClose, on
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">First Name *</label>
                                 <input
+                                    id="customer-name-input"
                                     type="text"
                                     required
                                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
@@ -135,6 +136,7 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({ isOpen, onClose, on
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
                             <input
+                                id="customer-phone-input"
                                 type="tel"
                                 required
                                 placeholder="10-digit mobile number"
@@ -181,6 +183,7 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({ isOpen, onClose, on
                                 Cancel
                             </button>
                             <button
+                                id="save-customer-btn"
                                 type="submit"
                                 disabled={loading}
                                 className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors disabled:opacity-50"

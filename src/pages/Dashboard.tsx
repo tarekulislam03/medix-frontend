@@ -10,9 +10,9 @@ import api from '@/services/api';
 import { Link } from 'react-router-dom';
 import AlertsModal from '@/components/common/AlertsModal';
 
-const StatCard = ({ title, value, subtext, icon: Icon, color }: any) => {
+const StatCard = ({ title, value, subtext, icon: Icon, color, ...props }: any) => {
     return (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col" {...props}>
             <div className="flex items-start justify-between">
                 <div>
                     <p className="text-sm font-medium text-gray-500">{title}</p>
@@ -93,7 +93,7 @@ const Dashboard: React.FC = () => {
     const recentBills = dashboardData?.recentBills || [];
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6" id="dashboard-container">
             <AlertsModal isOpen={showAlerts} onClose={() => setShowAlerts(false)} />
             {/* Page Header */}
             <div>
@@ -102,8 +102,9 @@ const Dashboard: React.FC = () => {
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="dashboard-stats-grid">
                 <StatCard
+                    id="dashboard-stat-todays-sales"
                     title="Today's Sales"
                     value={`₹${todaySales.totalAmount?.toLocaleString() || 0}`}
                     subtext={`${todaySales.totalBills || 0} bills today`}
@@ -111,6 +112,7 @@ const Dashboard: React.FC = () => {
                     color="bg-blue-600"
                 />
                 <StatCard
+                    id="dashboard-stat-monthly-revenue"
                     title="Monthly Revenue"
                     value={`₹${monthlySummary.totalAmount?.toLocaleString() || 0}`}
                     subtext={`${monthlySummary.totalBills || 0} bills this month`}
@@ -118,6 +120,7 @@ const Dashboard: React.FC = () => {
                     color="bg-indigo-600"
                 />
                 <StatCard
+                    id="dashboard-stat-total-customers"
                     title="Total Customers"
                     value={customers.totalCustomers || 0}
                     subtext="Registered customers"
@@ -125,6 +128,7 @@ const Dashboard: React.FC = () => {
                     color="bg-teal-600"
                 />
                 <StatCard
+                    id="dashboard-stat-low-stock"
                     title="Low Stock Items"
                     value={inventory.lowStockCount || 0}
                     subtext="Items below reorder level"
@@ -138,7 +142,7 @@ const Dashboard: React.FC = () => {
 
                 {/* Left Col: Recent Bills */}
                 <div className="lg:col-span-2 space-y-6">
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden" id="dashboard-recent-transactions">
                         <div className="px-6 py-5 border-b border-gray-100 flex justify-between items-center">
                             <h3 className="text-lg font-semibold text-gray-900">Recent Transactions</h3>
                             <Link to="/analytics" className="text-sm font-medium text-blue-600 hover:text-blue-500">View All</Link>
@@ -185,7 +189,7 @@ const Dashboard: React.FC = () => {
                 {/* Right Col: Shortcuts */}
                 <div className="space-y-6">
                     {/* Quick Actions */}
-                    <div className="bg-blue-600 rounded-xl shadow-sm p-6 text-white">
+                    <div className="bg-blue-600 rounded-xl shadow-sm p-6 text-white" id="dashboard-pos-shortcut">
                         <h3 className="text-lg font-bold mb-1">POS Billing</h3>
                         <p className="text-blue-100 text-sm mb-4">Start a new sale instantly</p>
                         <Link to="/pos" className="w-full bg-white text-blue-700 font-semibold py-2.5 rounded-lg shadow hover:bg-blue-50 transition p-2 flex justify-center items-center gap-2">

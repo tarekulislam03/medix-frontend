@@ -84,6 +84,7 @@ const InventoryList: React.FC = () => {
                 <h1 className="text-2xl font-bold text-gray-900 w-full sm:w-auto">Inventory</h1>
                 <div className="flex gap-2 w-full sm:w-auto">
                     <button
+                        id="import-bill-btn"
                         onClick={() => setIsImportModalOpen(true)}
                         className="inline-flex items-center justify-center rounded-lg bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm border border-gray-300 hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600 w-full sm:w-auto"
                     >
@@ -91,6 +92,7 @@ const InventoryList: React.FC = () => {
                         Import From Supplier Bill
                     </button>
                     <button
+                        id="add-product-btn"
                         onClick={() => setIsAddModalOpen(true)}
                         className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 w-full sm:w-auto"
                     >
@@ -107,6 +109,7 @@ const InventoryList: React.FC = () => {
                         <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
                     </div>
                     <input
+                        id="inventory-search"
                         type="text"
                         className="block w-full rounded-md border-0 py-2 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         placeholder="Search by name, SKU, or generic name..."
@@ -117,6 +120,7 @@ const InventoryList: React.FC = () => {
 
                 <div className="flex gap-2">
                     <button
+                        id="filter-low-stock"
                         onClick={() => toggleFilter('lowStock')}
                         className={clsx(
                             "inline-flex items-center px-4 py-2 text-sm font-medium rounded-md border",
@@ -129,6 +133,7 @@ const InventoryList: React.FC = () => {
                         Low Stock
                     </button>
                     <button
+                        id="filter-expiring"
                         onClick={() => toggleFilter('expiring')}
                         className={clsx(
                             "inline-flex items-center px-4 py-2 text-sm font-medium rounded-md border",
@@ -143,7 +148,7 @@ const InventoryList: React.FC = () => {
             </div>
 
             {/* Table */}
-            <div className="bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden">
+            <div className="bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden" id="inventory-table-container">
                 <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-50">

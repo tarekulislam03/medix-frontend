@@ -110,7 +110,7 @@ const Settings: React.FC = () => {
     };
 
     return (
-        <div className="space-y-6 max-w-4xl">
+        <div className="space-y-6 max-w-4xl" id="settings-container">
             <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
 
             {message && (
@@ -120,7 +120,7 @@ const Settings: React.FC = () => {
             )}
 
             {/* Store Settings */}
-            <form onSubmit={handleSaveStore} className="bg-white shadow rounded-lg p-6">
+            <form id="settings-profile" onSubmit={handleSaveStore} className="bg-white shadow rounded-lg p-6">
                 <h2 className="text-lg font-medium text-gray-900 mb-4">Store Settings</h2>
                 <p className="text-gray-500 mb-4">Configure your store details and business information.</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -218,7 +218,7 @@ const Settings: React.FC = () => {
 
 
             {/* Bill Configuration */}
-            <div className="bg-white shadow rounded-lg p-6">
+            <div id="settings-printer" className="bg-white shadow rounded-lg p-6">
                 <h2 className="text-lg font-medium text-gray-900 mb-4">Bill Configuration</h2>
                 <p className="text-gray-500 mb-4">Select the print width for your thermal printer.</p>
                 <div className="flex gap-6">
