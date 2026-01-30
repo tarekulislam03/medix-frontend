@@ -20,7 +20,7 @@ export default defineConfig({
 
     proxy: {
       '/api': {
-        target: 'https://medix-v1-backend.vercel.app',
+        target: 'https://medix-bend.vercel.app',
         changeOrigin: true,
       },
     },
