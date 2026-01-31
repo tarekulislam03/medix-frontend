@@ -9,7 +9,7 @@ const plans = [
         name: 'Free Trial',
         price: '₹0',
         period: '/7 days',
-        features: ['Single User', 'Basic Inventory', '100 Bills/day', 'Email Support'],
+        features: ['All Features Unlocked'],
         recommended: false,
     },
     {
