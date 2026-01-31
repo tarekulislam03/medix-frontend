@@ -149,7 +149,9 @@ const ImportInvoiceModal: React.FC<ImportInvoiceModalProps> = ({ isOpen, onClose
             });
 
             if (!extractResponse.ok) {
-                throw new Error('Failed to extract text from image');
+                const errorData = await extractResponse.json().catch(() => ({}));
+                console.error('[Import] Extract failed:', extractResponse.status, errorData);
+                throw new Error(errorData.error || `Failed to extract text (Status: ${extractResponse.status})`);
             }
 
             const extractData = await extractResponse.json();
@@ -167,7 +169,9 @@ const ImportInvoiceModal: React.FC<ImportInvoiceModalProps> = ({ isOpen, onClose
             });
 
             if (!parseResponse.ok) {
-                throw new Error('Failed to parse bill data');
+                const errorData = await parseResponse.json().catch(() => ({}));
+                console.error('[Import] Parse failed:', parseResponse.status, errorData);
+                throw new Error(errorData.error || `Failed to parse bill data (Status: ${parseResponse.status})`);
             }
 
             const parseData = await parseResponse.json();
