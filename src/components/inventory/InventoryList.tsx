@@ -27,13 +27,16 @@ const InventoryList: React.FC = () => {
     const [filter, setFilter] = useState<'all' | 'lowStock' | 'expiring'>('all');
     const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0 });
 
-    // Read URL params for deep linking
+    const [initialized, setInitialized] = useState(false);
+
+    // Read URL params for deep linking - MUST run first
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         const filterParam = params.get('filter');
         if (filterParam === 'lowStock') setFilter('lowStock');
         if (filterParam === 'expiring') setFilter('expiring');
         if (filterParam === 'expiring_soon') setFilter('expiring'); // Handle legacy link
+        setInitialized(true);
     }, []);
 
     const fetchProducts = async () => {
@@ -59,12 +62,15 @@ const InventoryList: React.FC = () => {
     };
 
     useEffect(() => {
+        // Don't fetch until URL params are read
+        if (!initialized) return;
+
         // Debounce search
         const timer = setTimeout(() => {
             fetchProducts();
         }, 500);
         return () => clearTimeout(timer);
-    }, [searchTerm, filter, pagination.page]);
+    }, [searchTerm, filter, pagination.page, initialized]);
 
     const toggleFilter = (newFilter: 'all' | 'lowStock' | 'expiring') => {
         setFilter(prev => prev === newFilter ? 'all' : newFilter);
