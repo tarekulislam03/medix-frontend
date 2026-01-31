@@ -32,7 +32,7 @@ interface InvoiceData {
 }
 
 // Text Extractor API URL (separate microservice)
-const TEXT_EXTRACTOR_URL = 'http://localhost:3000';
+const TEXT_EXTRACTOR_URL = 'https://auto-product-importrer.onrender.com';
 
 /**
  * Parse expiry date from various formats (MM/YY, MM-YY, MMYY, MM/YYYY) to YYYY-MM-DD
