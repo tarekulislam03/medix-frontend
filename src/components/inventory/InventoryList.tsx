@@ -183,7 +183,7 @@ const InventoryList: React.FC = () => {
                     <div className="space-y-3">
                         {products.map((product) => {
                             const isLowStock = product.quantity <= product.reorderLevel;
-                            const isExpiring = product.expiryDate ? new Date(product.expiryDate) < new Date(new Date().setDate(new Date().getDate() + 30)) : false;
+                            const isExpiring = product.expiryDate ? new Date(product.expiryDate) < new Date(new Date().setDate(new Date().getDate() + 90)) : false;
 
                             return (
                                 <div key={product.id} className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 touch-manipulation">
@@ -326,7 +326,7 @@ const InventoryList: React.FC = () => {
                                 products.map((product) => {
                                     const isLowStock = product.quantity <= product.reorderLevel;
                                     // Simple logic: if expiry date exists and < 30 days
-                                    const isExpiring = product.expiryDate ? new Date(product.expiryDate) < new Date(new Date().setDate(new Date().getDate() + 30)) : false;
+                                    const isExpiring = product.expiryDate ? new Date(product.expiryDate) < new Date(new Date().setDate(new Date().getDate() + 90)) : false;
 
                                     return (
                                         <tr key={product.id} className="hover:bg-gray-50">
