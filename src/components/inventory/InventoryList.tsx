@@ -27,6 +27,15 @@ const InventoryList: React.FC = () => {
     const [filter, setFilter] = useState<'all' | 'lowStock' | 'expiring'>('all');
     const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0 });
 
+    // Read URL params for deep linking
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const filterParam = params.get('filter');
+        if (filterParam === 'lowStock') setFilter('lowStock');
+        if (filterParam === 'expiring') setFilter('expiring');
+        if (filterParam === 'expiring_soon') setFilter('expiring'); // Handle legacy link
+    }, []);
+
     const fetchProducts = async () => {
         setLoading(true);
         try {

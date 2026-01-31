@@ -286,7 +286,7 @@ const Dashboard: React.FC = () => {
                             </div>
 
                             <Link
-                                to="/inventory?filter=low_stock"
+                                to="/inventory?filter=lowStock"
                                 className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors shadow-md"
                             >
                                 View Inventory
@@ -294,15 +294,34 @@ const Dashboard: React.FC = () => {
                         </div>
                     )}
 
-                    {/* Expiring Soon Alert List (Mini) */}
+                    {/* Expiring Soon Alert - Enhanced Visual Hierarchy */}
                     {inventory.expiringCount > 0 && (
-                        <div className="bg-orange-50 rounded-xl p-6 border border-orange-100">
-                            <div className="flex items-center mb-2">
-                                <ExclamationTriangleIcon className="h-5 w-5 text-orange-600 mr-2" />
-                                <h3 className="text-orange-900 font-medium">Expiring Soon</h3>
+                        <div className="relative bg-gradient-to-br from-amber-50 to-amber-100 rounded-xl p-6 border-2 border-amber-200 shadow-lg shadow-amber-100 mt-4">
+                            {/* Pulsing Alert Indicator */}
+                            <div className="absolute -top-2 -right-2 flex h-5 w-5">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-5 w-5 bg-amber-500"></span>
                             </div>
-                            <p className="text-orange-700 text-sm">{inventory.expiringCount} products are expiring soon or have expired. Plan accordingly.</p>
-                            <Link to="/inventory?filter=expiring_soon" className="mt-3 block text-sm font-medium text-orange-700 hover:text-orange-800 underline">
+
+                            <div className="flex items-center gap-3 mb-3">
+                                <div className="p-2 bg-amber-500 rounded-lg">
+                                    <ExclamationTriangleIcon className="h-6 w-6 text-white" />
+                                </div>
+                                <div>
+                                    <h3 className="text-amber-900 font-bold text-lg">Expiry Alert</h3>
+                                    <p className="text-amber-600 text-xs font-medium">Review inventory immediately</p>
+                                </div>
+                            </div>
+
+                            <div className="bg-white/60 rounded-lg p-3 mb-4">
+                                <p className="text-amber-800 font-semibold text-2xl">{inventory.expiringCount}</p>
+                                <p className="text-amber-700 text-sm">products expiring soon or expired</p>
+                            </div>
+
+                            <Link
+                                to="/inventory?filter=expiring"
+                                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-amber-600 text-white font-semibold rounded-lg hover:bg-amber-700 transition-colors shadow-md"
+                            >
                                 View Expiring Items
                             </Link>
                         </div>
