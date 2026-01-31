@@ -126,7 +126,7 @@ const AlertsModal: React.FC<AlertsModalProps> = ({ isOpen, onClose }) => {
                                     <div>
                                         <h4 className="flex items-center text-amber-600 font-semibold mb-3">
                                             <ClockIcon className="h-5 w-5 mr-2" />
-                                            Expiring Soon (Next 30 Days)
+                                            Expiring Soon / Expired
                                         </h4>
                                         <div className="bg-amber-50 rounded-xl border border-amber-100 overflow-hidden">
                                             <ul className="divide-y divide-amber-100">

@@ -301,7 +301,7 @@ const Dashboard: React.FC = () => {
                                 <ExclamationTriangleIcon className="h-5 w-5 text-orange-600 mr-2" />
                                 <h3 className="text-orange-900 font-medium">Expiring Soon</h3>
                             </div>
-                            <p className="text-orange-700 text-sm">{inventory.expiringCount} products are expiring within 30 days. Plan accordingly.</p>
+                            <p className="text-orange-700 text-sm">{inventory.expiringCount} products are expiring soon or have expired. Plan accordingly.</p>
                             <Link to="/inventory?filter=expiring_soon" className="mt-3 block text-sm font-medium text-orange-700 hover:text-orange-800 underline">
                                 View Expiring Items
                             </Link>

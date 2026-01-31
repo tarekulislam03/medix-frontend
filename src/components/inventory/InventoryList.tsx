@@ -190,7 +190,7 @@ const InventoryList: React.FC = () => {
                                     <div className="flex justify-between items-start mb-2">
                                         <div className="flex-1 min-w-0">
                                             <h3 className="text-sm font-medium text-gray-900 truncate">{product.name}</h3>
-                                            <p className="text-xs text-gray-500 truncate">{product.sku}</p>
+                                            <p className="text-xs text-gray-500 truncate">Batch: {product.batchNumber || 'N/A'}</p>
                                         </div>
                                         <span className="text-sm font-semibold text-gray-900 ml-2">₹{product.mrp}</span>
                                     </div>
@@ -290,7 +290,7 @@ const InventoryList: React.FC = () => {
                         <thead className="bg-gray-50">
                             <tr>
                                 <th scope="col" className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product Name</th>
-                                <th scope="col" className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">SKU</th>
+                                <th scope="col" className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">Batch</th>
                                 <th scope="col" className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">Category</th>
                                 <th scope="col" className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
                                 <th scope="col" className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
@@ -336,7 +336,7 @@ const InventoryList: React.FC = () => {
                                                     <span className="text-xs text-gray-500 text-truncate max-w-xs">{product.genericName}</span>
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.sku}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.batchNumber || 'N/A'}</td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <span className="inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
                                                     {product.category}
@@ -357,9 +357,12 @@ const InventoryList: React.FC = () => {
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm">
                                                 {product.expiryDate ? (
-                                                    <span className={clsx(isExpiring ? "text-red-600 font-medium" : "text-gray-500")}>
-                                                        {new Date(product.expiryDate).toLocaleDateString()}
-                                                    </span>
+                                                    <div className="flex items-center gap-1.5">
+                                                        {isExpiring && <ExclamationTriangleIcon className="h-4 w-4 text-red-500" />}
+                                                        <span className={clsx(isExpiring ? "text-red-600 font-medium" : "text-gray-500")}>
+                                                            {new Date(product.expiryDate).toLocaleDateString()}
+                                                        </span>
+                                                    </div>
                                                 ) : <span className="text-gray-400">N/A</span>}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-center">

@@ -8,6 +8,8 @@ interface CartProps {
     onRemoveItem: (index: number) => void;
 }
 
+
+
 const Cart: React.FC<CartProps> = ({ items, onUpdateItem, onRemoveItem }) => {
     return (
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden lg:h-full flex flex-col max-h-[200px] lg:max-h-none">
@@ -39,13 +41,9 @@ const Cart: React.FC<CartProps> = ({ items, onUpdateItem, onRemoveItem }) => {
                                         <div className="text-xs text-gray-500">{item.genericName}</div>
                                     </td>
                                     <td className="px-2 py-2">
-                                        <input
-                                            type="number"
-                                            min="0"
-                                            className="block w-full rounded border-0 py-1 text-center text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                                            value={item.cartPrice}
-                                            onChange={(e) => onUpdateItem(index, { cartPrice: Number(e.target.value) })}
-                                        />
+                                        <div className="text-sm text-gray-900 text-center">
+                                            ₹{item.cartPrice.toFixed(2)}
+                                        </div>
                                     </td>
                                     <td className="px-2 py-2">
                                         <input
