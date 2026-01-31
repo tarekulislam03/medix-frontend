@@ -1,8 +1,10 @@
 import { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from '@/context/AuthContext';
+import { TutorialProvider } from '@/context/TutorialContext';
 import ProtectedRoute from '@/components/common/ProtectedRoute';
 import DashboardLayout from '@/layouts/DashboardLayout';
+import TutorialOverlay from '@/components/tutorial/TutorialOverlay';
 
 // Lazy load pages
 const Dashboard = lazy(() => import('@/pages/Dashboard'));
@@ -30,37 +32,42 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <Suspense fallback={<LoadingFallback />}>
-          <Routes>
-            {/* Public Auth Routes */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/verify-email" element={<VerifyEmail />} />
-            <Route path="/verify-otp" element={<VerifyOTP />} />
+        <TutorialProvider>
+          <Suspense fallback={<LoadingFallback />}>
+            {/* Tutorial Overlay - renders on top of everything when active */}
+            <TutorialOverlay />
 
-            {/* Protected Routes */}
-            <Route path="/" element={
-              <ProtectedRoute>
-                <DashboardLayout />
-              </ProtectedRoute>
-            }>
-              <Route index element={<Navigate to="/dashboard" replace />} />
-              <Route path="dashboard" element={<Dashboard />} />
-              <Route path="inventory" element={<Inventory />} />
-              <Route path="pos" element={<POS />} />
-              <Route path="customers" element={<Customers />} />
-              <Route path="analytics" element={<Analytics />} />
-              <Route path="settings" element={<Settings />} />
-              <Route path="payment/status" element={<PaymentStatus />} />
-              <Route path="help" element={<Help />} />
-            </Route>
+            <Routes>
+              {/* Public Auth Routes */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/verify-email" element={<VerifyEmail />} />
+              <Route path="/verify-otp" element={<VerifyOTP />} />
 
-            {/* Fallback */}
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
-          </Routes>
-        </Suspense>
+              {/* Protected Routes */}
+              <Route path="/" element={
+                <ProtectedRoute>
+                  <DashboardLayout />
+                </ProtectedRoute>
+              }>
+                <Route index element={<Navigate to="/dashboard" replace />} />
+                <Route path="dashboard" element={<Dashboard />} />
+                <Route path="inventory" element={<Inventory />} />
+                <Route path="pos" element={<POS />} />
+                <Route path="customers" element={<Customers />} />
+                <Route path="analytics" element={<Analytics />} />
+                <Route path="settings" element={<Settings />} />
+                <Route path="payment/status" element={<PaymentStatus />} />
+                <Route path="help" element={<Help />} />
+              </Route>
+
+              {/* Fallback */}
+              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            </Routes>
+          </Suspense>
+        </TutorialProvider>
       </Router>
     </AuthProvider>
   );

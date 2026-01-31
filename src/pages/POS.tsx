@@ -276,13 +276,15 @@ const POS: React.FC = () => {
     };
 
     return (
-        <div className="h-[calc(100vh-6rem)] flex flex-col gap-4">
-            {/* Top Bar: Search & Customer */}
-            <div className="flex flex-col sm:flex-row gap-4">
-                <div className="flex-1" id="pos-product-search">
+        <div className="min-h-0 lg:h-[calc(100vh-6rem)] flex flex-col gap-3 sm:gap-4 pb-4 lg:pb-0">
+            {/* Top Bar: Search & Customer - Stack on mobile */}
+            <div className="flex flex-col gap-3 sm:gap-4 flex-shrink-0">
+                {/* Product Search - Full width and prominent on mobile */}
+                <div className="w-full" id="pos-product-search" data-tutorial="product-search">
                     <ProductSearch onSelectProduct={handleSelectProduct} />
                 </div>
-                <div className="flex-1" id="pos-customer-select">
+                {/* Customer Select */}
+                <div className="w-full" id="pos-customer-select" data-tutorial="customer-select">
                     <CustomerSelect
                         selectedCustomer={selectedCustomer}
                         onSelectCustomer={handleSelectCustomer}
@@ -299,10 +301,10 @@ const POS: React.FC = () => {
                 </div>
             </div>
 
-            {/* Main Content: Cart & Summary */}
-            <div className="flex flex-col lg:flex-row gap-4 flex-1 overflow-hidden" id="pos-cart-section">
-                {/* Cart Table */}
-                <div className="flex-[2] overflow-hidden min-h-[300px]">
+            {/* Main Content: Cart & Summary - Stack on mobile, side by side on desktop */}
+            <div className="flex flex-col lg:flex-row gap-3 sm:gap-4 flex-1 lg:overflow-hidden" id="pos-cart-section" data-tutorial="cart">
+                {/* Cart Table - Compact on mobile, priority on desktop */}
+                <div className="lg:flex-[2] lg:overflow-hidden min-h-[180px] lg:min-h-[300px]">
                     <Cart
                         items={cart}
                         onUpdateItem={handleUpdateCartItem}
@@ -310,8 +312,8 @@ const POS: React.FC = () => {
                     />
                 </div>
 
-                {/* Sidebar Summary */}
-                <div className="flex-1 min-w-[300px] overflow-auto" id="pos-checkout-section">
+                {/* Order Summary - Expanded on mobile, no scroll needed */}
+                <div className="lg:flex-1 lg:min-w-[320px] lg:overflow-auto" id="pos-checkout-section" data-tutorial="charge-btn">
                     <BillSummary
                         subtotal={subtotal}
                         totalTax={totalTax}
@@ -344,3 +346,4 @@ const POS: React.FC = () => {
 };
 
 export default POS;
+

@@ -7,6 +7,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { clsx } from 'clsx';
 import api from '@/services/api';
+import Logo from '@/components/common/Logo';
 
 interface TopbarProps {
     onMenuClick: () => void;
@@ -124,13 +125,21 @@ const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
         }
     };
 
+    // ... (existing code)
+
     return (
         <header className="bg-white border-b border-gray-200 h-16 flex items-center justify-between px-4 lg:px-6 sticky top-0 z-10 w-full">
-            {/* Left section: Menu button & Search */}
+            {/* Left section: Logo (Mobile) & Search */}
             <div className="flex items-center gap-4 flex-1">
+                {/* Mobile: Logo instead of Hamburger */}
+                <div className="lg:hidden flex items-center">
+                    <Logo className="h-8 w-8" textClassName="text-lg font-bold ml-2 text-gray-900" />
+                </div>
+
+                {/* Desktop: Hamburger/Menu trigger if needed (optional based on props) */}
                 <button
                     type="button"
-                    className="text-gray-500 hover:text-gray-700 focus:outline-none lg:hidden -ml-2 p-2 rounded-md hover:bg-gray-100"
+                    className="hidden lg:hidden text-gray-500 hover:text-gray-700 focus:outline-none -ml-2 p-2 rounded-md hover:bg-gray-100"
                     onClick={onMenuClick}
                 >
                     <Bars3Icon className="h-6 w-6" aria-hidden="true" />

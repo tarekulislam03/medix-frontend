@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import api from '@/services/api';
 import type { Product } from '@/types';
+import toast from 'react-hot-toast';
 
 interface EditProductModalProps {
     isOpen: boolean;
@@ -11,58 +12,82 @@ interface EditProductModalProps {
     product: Product | null;
 }
 
+const CATEGORIES = [
+    'MEDICINE',
+    'SUPPLEMENT',
+    'COSMETIC',
+    'MEDICAL_EQUIPMENT',
+    'PERSONAL_CARE',
+    'BABY_CARE',
+    'OTHER',
+];
+
+const DOSAGE_FORMS = [
+    { id: 'TABLET', label: 'Tablet / Capsule' },
+    { id: 'SYRUP', label: 'Syrup / Liquid' },
+    { id: 'INJECTION', label: 'Injection' },
+    { id: 'CREAM', label: 'Cream / Ointment' },
+    { id: 'OTHER', label: 'Other/Equipment' },
+];
+
 const EditProductModal: React.FC<EditProductModalProps> = ({ isOpen, onClose, onSuccess, product }) => {
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
+    const [dosageForm, setDosageForm] = useState('TABLET');
     const [formData, setFormData] = useState({
         name: '',
-        genericName: '',
-        manufacturer: '',
-        category: 'GENERAL',
-        dosageForm: 'TABLET',
-        strength: '',
-        unit: 'PCS',
+        category: 'MEDICINE',
+        supplier: '', // Replaces manufacturer in UI
         costPrice: '',
         sellingPrice: '',
         mrp: '',
-        quantity: '',
+        taxPercent: '0',
+        quantity: '', // Opening Stock
         minStockLevel: '10',
         reorderLevel: '20',
+        unit: 'pcs',
         batchNumber: '',
         expiryDate: '',
-        prescription: false,
-        description: '',
+
+        // Dynamic fields
+        tabletsPerStrip: '',
+        qtyInMl: '',
     });
 
     useEffect(() => {
         if (product) {
             setFormData({
                 name: product.name || '',
-                genericName: product.genericName || '',
-                manufacturer: product.manufacturer || '',
-                category: product.category || 'GENERAL',
-                dosageForm: product.dosageForm || 'TABLET',
-                strength: product.strength || '',
-                unit: product.unit || 'PCS',
+                category: product.category || 'MEDICINE',
+                supplier: product.manufacturer || '', // manufacturer field maps to supplier UI
                 costPrice: product.costPrice?.toString() || '',
                 sellingPrice: product.sellingPrice?.toString() || '',
                 mrp: product.mrp?.toString() || '',
+                taxPercent: product.taxPercent?.toString() || '0',
                 quantity: product.quantity?.toString() || '',
                 minStockLevel: product.minStockLevel?.toString() || '10',
                 reorderLevel: product.reorderLevel?.toString() || '20',
+                unit: product.unit || 'pcs',
                 batchNumber: product.batchNumber || '',
                 expiryDate: product.expiryDate ? new Date(product.expiryDate).toISOString().split('T')[0] : '',
-                prescription: product.prescription || false,
-                description: product.description || '',
+                tabletsPerStrip: product.tabletsPerStrip?.toString() || '',
+                qtyInMl: product.qtyInMl?.toString() || '',
             });
+            setDosageForm(product.dosageForm || 'TABLET');
         }
     }, [product]);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-        const { name, value, type } = e.target;
-        setFormData(prev => ({
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
+    };
+
+    // Auto-set Selling Price = MRP when MRP changes
+    const handleMrpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setFormData((prev) => ({
             ...prev,
-            [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
+            mrp: value,
+            sellingPrice: value, // MRP = Selling Price
         }));
     };
 
@@ -71,34 +96,64 @@ const EditProductModal: React.FC<EditProductModalProps> = ({ isOpen, onClose, on
         if (!product) return;
 
         setLoading(true);
-        setError('');
 
         try {
-            await api.put(`/products/${product.id}`, {
-                ...formData,
-                costPrice: parseFloat(formData.costPrice) || 0,
-                sellingPrice: parseFloat(formData.sellingPrice) || 0,
-                mrp: parseFloat(formData.mrp) || 0,
-                quantity: parseInt(formData.quantity) || 0,
+            const costPrice = parseFloat(formData.costPrice);
+            const sellingPrice = parseFloat(formData.sellingPrice);
+            const mrp = parseFloat(formData.mrp);
+            const quantity = parseInt(formData.quantity);
+
+            if (isNaN(costPrice) || isNaN(sellingPrice) || isNaN(mrp) || isNaN(quantity)) {
+                toast.error('Please fill all required numeric fields (Cost Price, Selling Price, MRP, Stock)');
+                setLoading(false);
+                return;
+            }
+
+            const payload: any = {
+                name: formData.name,
+                category: formData.category,
+                manufacturer: formData.supplier || undefined, // supplier stored as manufacturer
+
+                costPrice,
+                sellingPrice,
+                mrp,
+                taxPercent: parseFloat(formData.taxPercent) || 0,
+
+                quantity,
                 minStockLevel: parseInt(formData.minStockLevel) || 10,
                 reorderLevel: parseInt(formData.reorderLevel) || 20,
-                expiryDate: formData.expiryDate || null,
-            });
+                unit: formData.unit,
 
+                batchNumber: formData.batchNumber || undefined,
+                expiryDate: formData.expiryDate ? new Date(formData.expiryDate) : undefined,
+
+                tabletsPerStrip: dosageForm === 'TABLET' && formData.tabletsPerStrip
+                    ? parseInt(formData.tabletsPerStrip) || undefined
+                    : undefined,
+
+                qtyInMl: dosageForm === 'SYRUP' && formData.qtyInMl
+                    ? parseFloat(formData.qtyInMl) || undefined
+                    : undefined,
+            };
+
+            await api.put(`/products/${product.id}`, payload);
+            toast.success('Product updated successfully!');
             onSuccess();
             onClose();
-        } catch (err: any) {
-            setError(err.response?.data?.message || 'Failed to update product');
+        } catch (error: any) {
+            console.error('Failed to update product', error);
+            const message = error.response?.data?.message || 'Failed to update product. Please check inputs.';
+            toast.error(message);
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <Transition show={isOpen} as={React.Fragment}>
+        <Transition show={isOpen} as={Fragment}>
             <Dialog as="div" className="relative z-50" onClose={onClose}>
                 <Transition.Child
-                    as={React.Fragment}
+                    as={Fragment}
                     enter="ease-out duration-300"
                     enterFrom="opacity-0"
                     enterTo="opacity-100"
@@ -112,7 +167,7 @@ const EditProductModal: React.FC<EditProductModalProps> = ({ isOpen, onClose, on
                 <div className="fixed inset-0 z-10 overflow-y-auto">
                     <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
                         <Transition.Child
-                            as={React.Fragment}
+                            as={Fragment}
                             enter="ease-out duration-300"
                             enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                             enterTo="opacity-100 translate-y-0 sm:scale-100"
@@ -121,234 +176,209 @@ const EditProductModal: React.FC<EditProductModalProps> = ({ isOpen, onClose, on
                             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                         >
                             <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-2xl">
-                                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-                                    <Dialog.Title as="h3" className="text-lg font-semibold text-gray-900">
-                                        Edit Product
-                                    </Dialog.Title>
-                                    <button
-                                        type="button"
-                                        className="rounded-md text-gray-400 hover:text-gray-500"
-                                        onClick={onClose}
-                                    >
-                                        <XMarkIcon className="h-6 w-6" />
-                                    </button>
-                                </div>
+                                <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                                    <div className="flex items-center justify-between mb-5">
+                                        <Dialog.Title as="h3" className="text-xl font-semibold leading-6 text-gray-900">
+                                            Edit Product
+                                        </Dialog.Title>
+                                        <button onClick={onClose} className="text-gray-400 hover:text-gray-500">
+                                            <XMarkIcon className="h-6 w-6" />
+                                        </button>
+                                    </div>
 
-                                <form onSubmit={handleSubmit} className="px-6 py-4 max-h-[70vh] overflow-y-auto">
-                                    {error && (
-                                        <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
-                                            {error}
+                                    <form onSubmit={handleSubmit} className="space-y-6">
+                                        {/* Basic Details */}
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="col-span-1 md:col-span-2">
+                                                <label className="block text-sm font-medium text-gray-700">Product Name *</label>
+                                                <input
+                                                    type="text"
+                                                    name="name"
+                                                    required
+                                                    value={formData.name}
+                                                    onChange={handleChange}
+                                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2"
+                                                />
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700">Category *</label>
+                                                <select
+                                                    name="category"
+                                                    value={formData.category}
+                                                    onChange={handleChange}
+                                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2"
+                                                >
+                                                    {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                                                </select>
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700">Dosage Form</label>
+                                                <select
+                                                    value={dosageForm}
+                                                    onChange={(e) => setDosageForm(e.target.value)}
+                                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2"
+                                                >
+                                                    {DOSAGE_FORMS.map(f => <option key={f.id} value={f.id}>{f.label}</option>)}
+                                                </select>
+                                            </div>
+
+                                            {/* Dynamic Fields based on Dosage Form */}
+                                            {dosageForm === 'TABLET' && (
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700">Tablets per Strip</label>
+                                                    <input
+                                                        type="number"
+                                                        name="tabletsPerStrip"
+                                                        value={formData.tabletsPerStrip}
+                                                        onChange={handleChange}
+                                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2"
+                                                        placeholder="e.g 10"
+                                                    />
+                                                </div>
+                                            )}
+
+                                            {dosageForm === 'SYRUP' && (
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700">Quantity in ML</label>
+                                                    <input
+                                                        type="number"
+                                                        name="qtyInMl"
+                                                        value={formData.qtyInMl}
+                                                        onChange={handleChange}
+                                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2"
+                                                        placeholder="e.g 100"
+                                                    />
+                                                </div>
+                                            )}
+
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700">Supplier</label>
+                                                <input
+                                                    type="text"
+                                                    name="supplier"
+                                                    value={formData.supplier}
+                                                    onChange={handleChange}
+                                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2"
+                                                    placeholder="Supplier name"
+                                                />
+                                            </div>
                                         </div>
-                                    )}
 
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        {/* Name */}
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Product Name *</label>
-                                            <input
-                                                type="text"
-                                                name="name"
-                                                required
-                                                value={formData.name}
-                                                onChange={handleChange}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                                            />
+                                        <div className="border-t border-gray-200"></div>
+
+                                        {/* Pricing */}
+                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700">Cost Price *</label>
+                                                <input
+                                                    type="number"
+                                                    name="costPrice"
+                                                    required
+                                                    value={formData.costPrice}
+                                                    onChange={handleChange}
+                                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700">MRP * (= Selling Price)</label>
+                                                <input
+                                                    type="number"
+                                                    name="mrp"
+                                                    required
+                                                    value={formData.mrp}
+                                                    onChange={handleMrpChange}
+                                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700">Selling Price *</label>
+                                                <input
+                                                    type="number"
+                                                    name="sellingPrice"
+                                                    required
+                                                    value={formData.sellingPrice}
+                                                    onChange={handleChange}
+                                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700">Tax %</label>
+                                                <input
+                                                    type="number"
+                                                    name="taxPercent"
+                                                    value={formData.taxPercent}
+                                                    onChange={handleChange}
+                                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2"
+                                                />
+                                            </div>
                                         </div>
 
-                                        {/* Generic Name */}
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Generic Name</label>
-                                            <input
-                                                type="text"
-                                                name="genericName"
-                                                value={formData.genericName}
-                                                onChange={handleChange}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                                            />
+                                        <div className="border-t border-gray-200"></div>
+
+                                        {/* Stock & Expiry */}
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700">Stock Quantity *</label>
+                                                <input
+                                                    type="number"
+                                                    name="quantity"
+                                                    required
+                                                    value={formData.quantity}
+                                                    onChange={handleChange}
+                                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700">Batch Number</label>
+                                                <input
+                                                    type="text"
+                                                    name="batchNumber"
+                                                    value={formData.batchNumber}
+                                                    onChange={handleChange}
+                                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700">Expiry Date</label>
+                                                <input
+                                                    type="date"
+                                                    name="expiryDate"
+                                                    value={formData.expiryDate}
+                                                    onChange={handleChange}
+                                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700">Reorder Level</label>
+                                                <input
+                                                    type="number"
+                                                    name="reorderLevel"
+                                                    value={formData.reorderLevel}
+                                                    onChange={handleChange}
+                                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2"
+                                                />
+                                            </div>
                                         </div>
 
-                                        {/* Manufacturer */}
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Manufacturer</label>
-                                            <input
-                                                type="text"
-                                                name="manufacturer"
-                                                value={formData.manufacturer}
-                                                onChange={handleChange}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                                            />
-                                        </div>
-
-                                        {/* Category */}
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                                            <select
-                                                name="category"
-                                                value={formData.category}
-                                                onChange={handleChange}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                        <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 -mx-6 -mb-4 mt-6">
+                                            <button
+                                                type="submit"
+                                                disabled={loading}
+                                                className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto disabled:opacity-50"
                                             >
-                                                <option value="GENERAL">General</option>
-                                                <option value="PRESCRIPTION">Prescription</option>
-                                                <option value="OTC">OTC</option>
-                                                <option value="COSMETIC">Cosmetic</option>
-                                                <option value="AYURVEDIC">Ayurvedic</option>
-                                                <option value="SURGICAL">Surgical</option>
-                                            </select>
-                                        </div>
-
-                                        {/* Cost Price */}
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Cost Price (₹)</label>
-                                            <input
-                                                type="number"
-                                                name="costPrice"
-                                                step="0.01"
-                                                value={formData.costPrice}
-                                                onChange={handleChange}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                                            />
-                                        </div>
-
-                                        {/* Selling Price */}
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Selling Price (₹)</label>
-                                            <input
-                                                type="number"
-                                                name="sellingPrice"
-                                                step="0.01"
-                                                value={formData.sellingPrice}
-                                                onChange={handleChange}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                                            />
-                                        </div>
-
-                                        {/* MRP */}
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">MRP (₹) *</label>
-                                            <input
-                                                type="number"
-                                                name="mrp"
-                                                step="0.01"
-                                                required
-                                                value={formData.mrp}
-                                                onChange={handleChange}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                                            />
-                                        </div>
-
-                                        {/* Quantity */}
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Quantity *</label>
-                                            <input
-                                                type="number"
-                                                name="quantity"
-                                                required
-                                                value={formData.quantity}
-                                                onChange={handleChange}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                                            />
-                                        </div>
-
-                                        {/* Reorder Level */}
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Reorder Level</label>
-                                            <input
-                                                type="number"
-                                                name="reorderLevel"
-                                                value={formData.reorderLevel}
-                                                onChange={handleChange}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                                            />
-                                        </div>
-
-                                        {/* Batch Number */}
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Batch Number</label>
-                                            <input
-                                                type="text"
-                                                name="batchNumber"
-                                                value={formData.batchNumber}
-                                                onChange={handleChange}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                                            />
-                                        </div>
-
-                                        {/* Expiry Date */}
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Expiry Date</label>
-                                            <input
-                                                type="date"
-                                                name="expiryDate"
-                                                value={formData.expiryDate}
-                                                onChange={handleChange}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                                            />
-                                        </div>
-
-                                        {/* Unit */}
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Unit</label>
-                                            <select
-                                                name="unit"
-                                                value={formData.unit}
-                                                onChange={handleChange}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                                {loading ? 'Saving...' : 'Save Changes'}
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                                                onClick={onClose}
                                             >
-                                                <option value="PCS">Pieces</option>
-                                                <option value="STRIPS">Strips</option>
-                                                <option value="BOTTLES">Bottles</option>
-                                                <option value="BOXES">Boxes</option>
-                                                <option value="ML">ML</option>
-                                                <option value="MG">MG</option>
-                                            </select>
+                                                Cancel
+                                            </button>
                                         </div>
-                                    </div>
-
-                                    {/* Description */}
-                                    <div className="mt-4">
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                                        <textarea
-                                            name="description"
-                                            rows={2}
-                                            value={formData.description}
-                                            onChange={handleChange}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                                        />
-                                    </div>
-
-                                    {/* Prescription Required */}
-                                    <div className="mt-4 flex items-center">
-                                        <input
-                                            type="checkbox"
-                                            name="prescription"
-                                            id="prescription-edit"
-                                            checked={formData.prescription}
-                                            onChange={handleChange}
-                                            className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                        />
-                                        <label htmlFor="prescription-edit" className="ml-2 text-sm text-gray-700">
-                                            Prescription Required
-                                        </label>
-                                    </div>
-                                </form>
-
-                                <div className="flex justify-end gap-3 px-6 py-4 bg-gray-50 border-t border-gray-200">
-                                    <button
-                                        type="button"
-                                        onClick={onClose}
-                                        className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
-                                    >
-                                        Cancel
-                                    </button>
-                                    <button
-                                        type="submit"
-                                        disabled={loading}
-                                        onClick={handleSubmit}
-                                        className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50"
-                                    >
-                                        {loading ? 'Saving...' : 'Save Changes'}
-                                    </button>
+                                    </form>
                                 </div>
                             </Dialog.Panel>
                         </Transition.Child>

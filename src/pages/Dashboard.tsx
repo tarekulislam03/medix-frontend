@@ -4,25 +4,27 @@ import {
     ShoppingCartIcon,
     UsersIcon,
     ExclamationTriangleIcon,
+    SparklesIcon,
 } from '@heroicons/react/24/outline';
 import { clsx } from 'clsx';
 import api from '@/services/api';
 import { Link } from 'react-router-dom';
 import AlertsModal from '@/components/common/AlertsModal';
+import { useTutorial } from '@/context/TutorialContext';
 
-const StatCard = ({ title, value, subtext, icon: Icon, color, ...props }: any) => {
+const StatCard = ({ title, value, subtext, icon: Icon, color, className, ...props }: any) => {
     return (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col" {...props}>
+        <div className={clsx("bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 flex flex-col touch-manipulation", className)} {...props}>
             <div className="flex items-start justify-between">
-                <div>
-                    <p className="text-sm font-medium text-gray-500">{title}</p>
-                    <h3 className="text-2xl font-bold text-gray-900 mt-2">{value}</h3>
+                <div className="min-w-0 flex-1">
+                    <p className="text-xs sm:text-sm font-medium text-gray-500 truncate">{title}</p>
+                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mt-1 sm:mt-2 truncate">{value}</h3>
                 </div>
-                <div className={clsx("p-3 rounded-lg", color)}>
-                    <Icon className="h-6 w-6 text-white" />
+                <div className={clsx("p-2.5 sm:p-3 rounded-lg flex-shrink-0 ml-2", color)}>
+                    <Icon className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                 </div>
             </div>
-            {subtext && <p className="mt-4 text-sm text-gray-500">{subtext}</p>}
+            {subtext && <p className="mt-2 sm:mt-4 text-xs sm:text-sm text-gray-500 truncate">{subtext}</p>}
         </div>
     );
 };
@@ -31,6 +33,8 @@ const Dashboard: React.FC = () => {
     const [dashboardData, setDashboardData] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [showAlerts, setShowAlerts] = useState(false);
+    const { startTutorial, hasSeenTutorial } = useTutorial();
+
     useEffect(() => {
         const abortController = new AbortController();
         let isMounted = true;
@@ -78,6 +82,20 @@ const Dashboard: React.FC = () => {
         };
     }, []);
 
+    // Separate effect for auto-starting tutorial AFTER loading completes
+    useEffect(() => {
+        // Only auto-start tutorial after dashboard has loaded
+        if (loading) return;
+        if (hasSeenTutorial) return;
+
+        // Small delay to ensure UI is fully rendered
+        const timer = setTimeout(() => {
+            startTutorial();
+        }, 500);
+
+        return () => clearTimeout(timer);
+    }, [loading, hasSeenTutorial, startTutorial]);
+
     if (loading) {
         return (
             <div className="flex justify-center items-center h-96">
@@ -93,23 +111,35 @@ const Dashboard: React.FC = () => {
     const recentBills = dashboardData?.recentBills || [];
 
     return (
-        <div className="space-y-6" id="dashboard-container">
+        <div className="space-y-4 sm:space-y-6 dashboard-content" id="dashboard-container">
             <AlertsModal isOpen={showAlerts} onClose={() => setShowAlerts(false)} />
-            {/* Page Header */}
-            <div>
-                <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-                <p className="text-gray-500">Welcome back, here's what's happening at your store.</p>
+
+            {/* Page Header - Mobile Optimized (Button beside Title) */}
+            <div className="flex items-center justify-between gap-3">
+                <div>
+                    <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Dashboard</h1>
+                    <p className="text-sm sm:text-base text-gray-500 hidden sm:block">Welcome back, here's what's happening at your store.</p>
+                </div>
+                <button
+                    onClick={startTutorial}
+                    className="flex items-center justify-center gap-1.5 px-3 py-2 bg-gradient-to-r from-purple-700 to-blue-800 
+                               text-white text-sm font-medium rounded-lg hover:from-purple-800 hover:to-blue-900 
+                               transition-all shadow-md shadow-purple-600/25 touch-manipulation whitespace-nowrap"
+                >
+                    <SparklesIcon className="w-4 h-4" />
+                    Take Tour
+                </button>
             </div>
 
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="dashboard-stats-grid">
+            {/* Stats Grid - 2 columns on mobile, 4 on desktop */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 stats-grid" id="dashboard-stats-grid">
                 <StatCard
                     id="dashboard-stat-todays-sales"
                     title="Today's Sales"
                     value={`₹${todaySales.totalAmount?.toLocaleString() || 0}`}
                     subtext={`${todaySales.totalBills || 0} bills today`}
                     icon={CurrencyRupeeIcon}
-                    color="bg-blue-600"
+                    color="bg-blue-800"
                 />
                 <StatCard
                     id="dashboard-stat-monthly-revenue"
@@ -137,17 +167,47 @@ const Dashboard: React.FC = () => {
                 />
             </div>
 
-            {/* Main Content Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Main Content Grid - Stack on mobile */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
 
                 {/* Left Col: Recent Bills */}
-                <div className="lg:col-span-2 space-y-6">
+                <div className="lg:col-span-2 space-y-4 sm:space-y-6">
                     <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden" id="dashboard-recent-transactions">
-                        <div className="px-6 py-5 border-b border-gray-100 flex justify-between items-center">
-                            <h3 className="text-lg font-semibold text-gray-900">Recent Transactions</h3>
-                            <Link to="/analytics" className="text-sm font-medium text-blue-600 hover:text-blue-500">View All</Link>
+                        <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-100 flex justify-between items-center">
+                            <h3 className="text-base sm:text-lg font-semibold text-gray-900">Recent Transactions</h3>
+                            <Link to="/analytics" className="text-sm font-medium text-blue-600 hover:text-blue-500 touch-manipulation">View All</Link>
                         </div>
-                        <div className="overflow-x-auto">
+
+                        {/* Mobile: Card-based layout */}
+                        <div className="divide-y divide-gray-100 sm:hidden">
+                            {recentBills.length > 0 ? recentBills.slice(0, 5).map((bill: any) => (
+                                <div key={bill.id} className="p-4 touch-manipulation hover:bg-gray-50">
+                                    <div className="flex justify-between items-start mb-2">
+                                        <div>
+                                            <p className="text-sm font-medium text-gray-900">{bill.billNumber}</p>
+                                            <p className="text-xs text-gray-500">{bill.customerName || 'Walk-in'}</p>
+                                        </div>
+                                        <span className={clsx(
+                                            "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium",
+                                            bill.status === 'COMPLETED' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                                        )}>
+                                            {bill.status}
+                                        </span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <p className="text-xs text-gray-500">
+                                            {new Date(bill.billedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                        </p>
+                                        <p className="text-sm font-semibold text-gray-900">₹{bill.totalAmount?.toLocaleString()}</p>
+                                    </div>
+                                </div>
+                            )) : (
+                                <div className="p-6 text-center text-gray-500 text-sm">No recent transactions</div>
+                            )}
+                        </div>
+
+                        {/* Desktop: Table layout */}
+                        <div className="overflow-x-auto hidden sm:block table-scroll-mobile">
                             <table className="min-w-full divide-y divide-gray-200">
                                 <thead className="bg-gray-50">
                                     <tr>
@@ -186,28 +246,50 @@ const Dashboard: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Right Col: Shortcuts */}
-                <div className="space-y-6">
-                    {/* Quick Actions */}
-                    <div className="bg-blue-600 rounded-xl shadow-sm p-6 text-white" id="dashboard-pos-shortcut">
-                        <h3 className="text-lg font-bold mb-1">POS Billing</h3>
-                        <p className="text-blue-100 text-sm mb-4">Start a new sale instantly</p>
-                        <Link to="/pos" className="w-full bg-white text-blue-700 font-semibold py-2.5 rounded-lg shadow hover:bg-blue-50 transition p-2 flex justify-center items-center gap-2">
+                {/* Right Col: Quick Actions - Show at top on mobile */}
+                <div className="space-y-4 sm:space-y-6 order-first lg:order-none">
+                    {/* Quick Actions - POS Button */}
+                    <div className="bg-gradient-to-br from-blue-700 to-blue-900 rounded-xl shadow-lg p-4 sm:p-6 text-white" id="dashboard-pos-shortcut">
+                        <h3 className="text-base sm:text-lg font-bold mb-1">POS Billing</h3>
+                        <p className="text-blue-200 text-xs sm:text-sm mb-3 sm:mb-4">Start a new sale instantly</p>
+                        <Link
+                            to="/pos"
+                            className="w-full bg-white text-blue-800 font-semibold py-3 sm:py-2.5 rounded-lg shadow-md hover:bg-blue-50 transition flex justify-center items-center gap-2 touch-manipulation min-h-[44px]"
+                        >
                             <ShoppingCartIcon className="h-5 w-5" />
                             New Bill
                         </Link>
                     </div>
 
-                    {/* Low Stock Alert List (Mini) */}
+                    {/* Low Stock Alert - Enhanced Visual Hierarchy */}
                     {inventory.lowStockCount > 0 && (
-                        <div className="bg-red-50 rounded-xl p-6 border border-red-100">
-                            <div className="flex items-center mb-2">
-                                <ExclamationTriangleIcon className="h-5 w-5 text-red-600 mr-2" />
-                                <h3 className="text-red-900 font-medium">Attention Needed</h3>
+                        <div className="relative bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-6 border-2 border-red-200 shadow-lg shadow-red-100">
+                            {/* Pulsing Alert Indicator */}
+                            <div className="absolute -top-2 -right-2 flex h-5 w-5">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-5 w-5 bg-red-500"></span>
                             </div>
-                            <p className="text-red-700 text-sm">{inventory.lowStockCount} products are running low on stock. Check inventory.</p>
-                            <Link to="/inventory?filter=low_stock" className="mt-3 block text-sm font-medium text-red-700 hover:text-red-800 underline">
-                                Go to Inventory
+
+                            <div className="flex items-center gap-3 mb-3">
+                                <div className="p-2 bg-red-500 rounded-lg">
+                                    <ExclamationTriangleIcon className="h-6 w-6 text-white" />
+                                </div>
+                                <div>
+                                    <h3 className="text-red-900 font-bold text-lg">Attention Needed</h3>
+                                    <p className="text-red-600 text-xs font-medium">Immediate action required</p>
+                                </div>
+                            </div>
+
+                            <div className="bg-white/60 rounded-lg p-3 mb-4">
+                                <p className="text-red-800 font-semibold text-2xl">{inventory.lowStockCount}</p>
+                                <p className="text-red-700 text-sm">products running low on stock</p>
+                            </div>
+
+                            <Link
+                                to="/inventory?filter=low_stock"
+                                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors shadow-md"
+                            >
+                                View Inventory
                             </Link>
                         </div>
                     )}

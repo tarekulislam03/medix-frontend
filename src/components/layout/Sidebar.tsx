@@ -15,6 +15,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { clsx } from 'clsx';
 import { useAuth } from '@/hooks/useAuth';
+import Logo from '@/components/common/Logo';
 
 const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
@@ -49,19 +50,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
             {/* Sidebar component */}
             <div
                 className={clsx(
-                    'fixed inset-y-0 left-0 z-30 w-64 transform bg-white shadow-xl transition-transform duration-300 lg:translate-x-0 lg:static lg:inset-auto lg:shadow-none border-r border-gray-200',
+                    'sidebar fixed inset-y-0 left-0 z-30 w-64 transform bg-white shadow-xl transition-transform duration-300 lg:translate-x-0 lg:static lg:inset-auto lg:shadow-none border-r border-gray-200',
                     isOpen ? 'translate-x-0' : '-translate-x-full'
                 )}
             >
                 <div className="flex h-full flex-col">
                     {/* Logo */}
                     <div className="flex h-16 items-center px-6 border-b border-gray-200">
-                        <div className="flex items-center gap-2">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white font-bold text-xl">
-                                M
-                            </div>
-                            <span className="text-xl font-bold text-gray-900">MediX</span>
-                        </div>
+                        <Logo />
                     </div>
 
                     {/* Navigation */}
@@ -76,19 +72,20 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
                                     key={item.name}
                                     to={item.href}
                                     id={`nav-${item.name.toLowerCase().replace(/[^a-z0-9]/g, '-')}`}
+                                    onClick={() => setIsOpen(false)} // Close sidebar on mobile after clicking
                                     className={({ isActive }) =>
                                         clsx(
-                                            'group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors',
+                                            'group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 relative',
                                             isActive
-                                                ? 'bg-blue-50 text-blue-700'
-                                                : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                                                ? 'bg-blue-50 text-blue-800 shadow-sm border-l-4 border-blue-700 -ml-[4px] pl-[calc(0.75rem+4px)]'
+                                                : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 hover:pl-4 hover:shadow-sm'
                                         )
                                     }
                                 >
                                     <item.icon
                                         className={clsx(
-                                            'mr-3 h-5 w-5 flex-shrink-0',
-                                            isActive ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-500'
+                                            'mr-3 h-5 w-5 flex-shrink-0 transition-colors duration-200',
+                                            isActive ? 'text-blue-700' : 'text-gray-400 group-hover:text-blue-600'
                                         )}
                                         aria-hidden="true"
                                     />
@@ -102,6 +99,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
                         </div>
                         <NavLink
                             to="/help"
+                            onClick={() => setIsOpen(false)} // Close sidebar on mobile after clicking
                             className={({ isActive }) =>
                                 clsx(
                                     'group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors',

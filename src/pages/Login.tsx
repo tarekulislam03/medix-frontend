@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import api from '@/services/api';
@@ -11,8 +11,10 @@ const Login: React.FC = () => {
     const [rememberMe, setRememberMe] = useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    const { login, isAuthenticated } = useAuth();
+    const [isRedirecting, setIsRedirecting] = useState(false);
+    const { login, isAuthenticated, isLoading: authLoading } = useAuth();
     const navigate = useNavigate();
+    const hasRedirected = useRef(false);
 
     // Check for remembered email on mount
     useEffect(() => {
@@ -23,13 +25,15 @@ const Login: React.FC = () => {
         }
     }, []);
 
-    // Redirect if already authenticated (on mount only)
+    // Redirect if already authenticated (on mount only, not after login)
     useEffect(() => {
-        if (isAuthenticated) {
-            // Using replace to avoid back button issues
-            window.location.replace('/dashboard');
+        // Only redirect if we're authenticated AND not currently in a login flow
+        // AND auth is not loading (meaning it's a page load with existing session)
+        if (isAuthenticated && !authLoading && !loading && !hasRedirected.current) {
+            hasRedirected.current = true;
+            navigate('/dashboard', { replace: true });
         }
-    }, [isAuthenticated]);
+    }, [isAuthenticated, authLoading, loading, navigate]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -60,13 +64,17 @@ const Login: React.FC = () => {
                 storeId: store.id,
             };
 
+            // Set login state
             login(tokens.accessToken, userWithStore, rememberMe);
 
-            // Force hard navigation to dashboard to ensure clean state
-            // This fixes the issue where users get stuck on login screen despite success
+            // Mark that we're about to redirect
+            setIsRedirecting(true);
+            hasRedirected.current = true;
+
+            // Navigate after a small delay to ensure state is set
             setTimeout(() => {
-                window.location.href = '/dashboard';
-            }, 100);
+                navigate('/dashboard', { replace: true });
+            }, 50);
 
         } catch (err: any) {
             console.error(err);
@@ -79,24 +87,34 @@ const Login: React.FC = () => {
             }
 
             setError(errorMessage);
-        } finally {
             setLoading(false);
         }
     };
 
-    // If authenticated or loading, show loader instead of form
-    if (isAuthenticated || (loading && !error)) {
+    // Show loading if auth is still being checked on page load
+    if (authLoading) {
         return (
             <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
                 <div className="text-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
-                    <p className="text-blue-100 font-medium">
-                        {isAuthenticated ? 'Redirecting to Dashboard...' : 'Signing in...'}
-                    </p>
+                    <p className="text-blue-100 font-medium">Loading...</p>
                 </div>
             </div>
         );
     }
+
+    // Show redirecting state after successful login
+    if (isRedirecting || (isAuthenticated && hasRedirected.current)) {
+        return (
+            <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+                    <p className="text-blue-100 font-medium">Redirecting to Dashboard...</p>
+                </div>
+            </div>
+        );
+    }
+
 
     return (
         <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 py-12 px-4 sm:px-6 lg:px-8">

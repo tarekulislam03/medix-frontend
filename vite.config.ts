@@ -34,7 +34,7 @@ export default defineConfig({
 
     proxy: {
       '/api': {
-        target: 'https://medix-bend.vercel.app',
+        target: 'http://localhost:10000',
         changeOrigin: true,
       },
     },

@@ -65,28 +65,46 @@ const Analytics: React.FC = () => {
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Today's Sales */}
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
                     <h3 className="text-gray-500 text-sm font-medium">Today's Sales</h3>
                     <div className="mt-2 flex items-baseline">
-                        <span className="text-3xl font-bold text-gray-900">
-                            {stats ? formatCurrency(Number(stats.today.total)) : '...'}
-                        </span>
-                        <span className="ml-2 text-sm text-gray-500">
-                            ({stats?.today.count || 0} bills)
-                        </span>
+                        {stats ? (
+                            <>
+                                <span className="text-3xl font-bold text-gray-900">
+                                    {formatCurrency(Number(stats.today.total))}
+                                </span>
+                                <span className="ml-2 text-sm text-gray-500">
+                                    ({stats?.today.count || 0} bills)
+                                </span>
+                            </>
+                        ) : (
+                            <div className="animate-pulse flex items-baseline gap-3">
+                                <div className="h-8 bg-gray-200 rounded w-28"></div>
+                                <div className="h-4 bg-gray-100 rounded w-16"></div>
+                            </div>
+                        )}
                     </div>
                 </div>
 
                 {/* Monthly Sales */}
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
                     <h3 className="text-gray-500 text-sm font-medium">This Month's Sales</h3>
                     <div className="mt-2 flex items-baseline">
-                        <span className="text-3xl font-bold text-gray-900">
-                            {stats ? formatCurrency(Number(stats.month.total)) : '...'}
-                        </span>
-                        <span className="ml-2 text-sm text-gray-500">
-                            ({stats?.month.count || 0} bills)
-                        </span>
+                        {stats ? (
+                            <>
+                                <span className="text-3xl font-bold text-gray-900">
+                                    {formatCurrency(Number(stats.month.total))}
+                                </span>
+                                <span className="ml-2 text-sm text-gray-500">
+                                    ({stats?.month.count || 0} bills)
+                                </span>
+                            </>
+                        ) : (
+                            <div className="animate-pulse flex items-baseline gap-3">
+                                <div className="h-8 bg-gray-200 rounded w-32"></div>
+                                <div className="h-4 bg-gray-100 rounded w-16"></div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
@@ -125,15 +143,44 @@ const Analytics: React.FC = () => {
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
                             {isLoading ? (
-                                <tr>
-                                    <td colSpan={5} className="px-6 py-4 text-center text-sm text-gray-500">
-                                        Loading...
-                                    </td>
-                                </tr>
+                                // Skeleton Loader Rows
+                                <>
+                                    {[...Array(5)].map((_, i) => (
+                                        <tr key={i} className="animate-pulse">
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center gap-2">
+                                                    <div className="h-4 w-4 bg-gray-200 rounded"></div>
+                                                    <div className="h-4 bg-blue-100 rounded w-24"></div>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div className="h-4 bg-gray-200 rounded w-20 mb-1"></div>
+                                                <div className="h-3 bg-gray-100 rounded w-16"></div>
+                                            </td>
+                                            <td className="px-6 py-4"><div className="h-4 bg-gray-200 rounded w-28"></div></td>
+                                            <td className="px-6 py-4"><div className="h-4 bg-gray-200 rounded w-16"></div></td>
+                                            <td className="px-6 py-4"><div className="h-6 bg-gray-100 rounded-full w-20"></div></td>
+                                        </tr>
+                                    ))}
+                                </>
                             ) : history.length === 0 ? (
                                 <tr>
-                                    <td colSpan={5} className="px-6 py-4 text-center text-sm text-gray-500">
-                                        No bills found.
+                                    <td colSpan={5} className="px-6 py-16 text-center">
+                                        {/* Empty State */}
+                                        <div className="flex flex-col items-center justify-center">
+                                            <div className="w-20 h-20 mb-4 relative">
+                                                <div className="absolute inset-0 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl transform rotate-6"></div>
+                                                <div className="absolute inset-0 bg-white rounded-2xl shadow-lg flex items-center justify-center">
+                                                    <svg className="w-10 h-10 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                            <h3 className="text-lg font-semibold text-gray-900 mb-2">No transactions yet</h3>
+                                            <p className="text-gray-500 text-sm max-w-sm">
+                                                Complete your first sale in the POS to see transaction history here.
+                                            </p>
+                                        </div>
                                     </td>
                                 </tr>
                             ) : (

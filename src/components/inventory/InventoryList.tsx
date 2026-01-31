@@ -70,31 +70,39 @@ const InventoryList: React.FC = () => {
     const handleDelete = async (productId: string) => {
         try {
             await api.delete(`/products/${productId}`);
+            // Remove from local state for smooth UX (no full refetch)
+            setProducts(prev => prev.filter(p => p.id !== productId));
+            setPagination(prev => ({ ...prev, total: Math.max(0, prev.total - 1) }));
             setDeleteConfirm(null);
-            fetchProducts();
+            toast.success('Product deleted successfully');
         } catch (error: any) {
             toast.error(error.response?.data?.message || 'Failed to delete product');
         }
     };
 
     return (
-        <div className="space-y-6">
-            {/* Header & Actions */}
-            <div className="flex flex-col sm:flex-row justify-between gap-4 items-center">
-                <h1 className="text-2xl font-bold text-gray-900 w-full sm:w-auto">Inventory</h1>
-                <div className="flex gap-2 w-full sm:w-auto">
+        <div className="space-y-4 sm:space-y-6 inventory-content">
+            {/* Header & Actions - Stack on mobile */}
+            {/* Header & Actions - Stack on mobile, Side-by-side on Desktop */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Inventory</h1>
+
+                <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                     <button
                         id="import-bill-btn"
+                        data-tutorial="import-invoice"
                         onClick={() => setIsImportModalOpen(true)}
-                        className="inline-flex items-center justify-center rounded-lg bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm border border-gray-300 hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600 w-full sm:w-auto"
+                        className="inline-flex items-center justify-center rounded-lg bg-white px-4 py-2.5 sm:py-2 text-sm font-semibold text-gray-700 shadow-sm border border-gray-300 hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600 w-full sm:w-auto touch-manipulation min-h-[44px]"
                     >
                         <ArrowUpTrayIcon className="h-5 w-5 mr-2 text-gray-400" />
-                        Import From Supplier Bill
+                        <span className="hidden sm:inline">Import From Supplier Bill</span>
+                        <span className="sm:hidden">Import Bill</span>
                     </button>
                     <button
                         id="add-product-btn"
+                        data-tutorial="add-product"
                         onClick={() => setIsAddModalOpen(true)}
-                        className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 w-full sm:w-auto"
+                        className="inline-flex items-center justify-center rounded-lg bg-blue-700 px-4 py-2.5 sm:py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 w-full sm:w-auto transition-colors touch-manipulation min-h-[44px]"
                     >
                         <PlusIcon className="h-5 w-5 mr-2" />
                         Add Product
@@ -102,71 +110,218 @@ const InventoryList: React.FC = () => {
                 </div>
             </div>
 
-            {/* Filters & Search */}
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 flex flex-col sm:flex-row gap-4 justify-between">
-                <div className="relative flex-1 max-w-lg">
+            {/* Filters & Search - Responsive Layout */}
+            <div className="bg-white p-3 sm:p-4 rounded-lg shadow-sm border border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+                {/* Search Bar - Grows on desktop but limited width */}
+                <div className="relative w-full sm:max-w-md">
                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                         <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
                     </div>
                     <input
                         id="inventory-search"
                         type="text"
-                        className="block w-full rounded-md border-0 py-2 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                        placeholder="Search by name, SKU, or generic name..."
+                        className="block w-full rounded-lg border-0 py-3 sm:py-2 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 text-base sm:text-sm touch-manipulation"
+                        placeholder="Search products..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
 
-                <div className="flex gap-2">
+                {/* Filter Buttons - Aligned right on desktop */}
+                <div className="flex gap-2 w-full sm:w-auto">
                     <button
                         id="filter-low-stock"
                         onClick={() => toggleFilter('lowStock')}
                         className={clsx(
-                            "inline-flex items-center px-4 py-2 text-sm font-medium rounded-md border",
+                            "flex-1 sm:flex-none inline-flex items-center justify-center px-3 sm:px-4 py-2.5 sm:py-2 text-xs sm:text-sm font-medium rounded-lg border touch-manipulation min-h-[44px]",
                             filter === 'lowStock'
                                 ? "bg-red-50 text-red-700 border-red-200 ring-1 ring-red-200"
                                 : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
                         )}
                     >
-                        <ExclamationTriangleIcon className={clsx("h-5 w-5 mr-2", filter === 'lowStock' ? "text-red-500" : "text-gray-400")} />
-                        Low Stock
+                        <ExclamationTriangleIcon className={clsx("h-4 w-4 sm:h-5 sm:w-5 mr-1.5 sm:mr-2", filter === 'lowStock' ? "text-red-500" : "text-gray-400")} />
+                        <span className="hidden sm:inline">Low Stock</span>
+                        <span className="sm:hidden">Low</span>
                     </button>
                     <button
                         id="filter-expiring"
                         onClick={() => toggleFilter('expiring')}
                         className={clsx(
-                            "inline-flex items-center px-4 py-2 text-sm font-medium rounded-md border",
+                            "flex-1 sm:flex-none inline-flex items-center justify-center px-3 sm:px-4 py-2.5 sm:py-2 text-xs sm:text-sm font-medium rounded-lg border touch-manipulation min-h-[44px]",
                             filter === 'expiring'
                                 ? "bg-yellow-50 text-yellow-700 border-yellow-200 ring-1 ring-yellow-200"
                                 : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
                         )}
                     >
-                        Expiring Soon
+                        <span className="hidden sm:inline">Expiring Soon</span>
+                        <span className="sm:hidden">Expiring</span>
                     </button>
                 </div>
             </div>
 
-            {/* Table */}
-            <div className="bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden" id="inventory-table-container">
-                <div className="overflow-x-auto">
+            {/* Mobile Card View */}
+            <div className="block sm:hidden" id="inventory-mobile-cards">
+                {loading ? (
+                    <div className="space-y-3">
+                        {[...Array(5)].map((_, i) => (
+                            <div key={i} className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 animate-pulse">
+                                <div className="flex justify-between mb-3">
+                                    <div className="h-4 bg-gray-200 rounded w-32"></div>
+                                    <div className="h-4 bg-gray-200 rounded w-16"></div>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <div className="h-6 bg-gray-100 rounded w-20"></div>
+                                    <div className="flex gap-2">
+                                        <div className="h-8 w-8 bg-gray-200 rounded"></div>
+                                        <div className="h-8 w-8 bg-gray-200 rounded"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                ) : products.length > 0 ? (
+                    <div className="space-y-3">
+                        {products.map((product) => {
+                            const isLowStock = product.quantity <= product.reorderLevel;
+                            const isExpiring = product.expiryDate ? new Date(product.expiryDate) < new Date(new Date().setDate(new Date().getDate() + 30)) : false;
+
+                            return (
+                                <div key={product.id} className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 touch-manipulation">
+                                    <div className="flex justify-between items-start mb-2">
+                                        <div className="flex-1 min-w-0">
+                                            <h3 className="text-sm font-medium text-gray-900 truncate">{product.name}</h3>
+                                            <p className="text-xs text-gray-500 truncate">{product.sku}</p>
+                                        </div>
+                                        <span className="text-sm font-semibold text-gray-900 ml-2">₹{product.mrp}</span>
+                                    </div>
+
+                                    <div className="flex items-center justify-between mt-3">
+                                        <div className="flex items-center gap-2">
+                                            <span className={clsx(
+                                                "inline-flex items-center px-2 py-1 text-xs font-medium rounded-full",
+                                                isLowStock ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"
+                                            )}>
+                                                {isLowStock && <ExclamationTriangleIcon className="h-3 w-3 mr-1" />}
+                                                Stock: {product.quantity}
+                                            </span>
+                                            {isExpiring && (
+                                                <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-700">
+                                                    Exp Soon
+                                                </span>
+                                            )}
+                                        </div>
+
+                                        <div className="flex gap-2">
+                                            <button
+                                                onClick={() => handleEdit(product)}
+                                                className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg touch-manipulation min-w-[40px] min-h-[40px] flex items-center justify-center"
+                                            >
+                                                <PencilSquareIcon className="h-5 w-5" />
+                                            </button>
+                                            <button
+                                                onClick={() => setDeleteConfirm(product.id)}
+                                                className="p-2 text-red-600 hover:bg-red-50 rounded-lg touch-manipulation min-w-[40px] min-h-[40px] flex items-center justify-center"
+                                            >
+                                                <TrashIcon className="h-5 w-5" />
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    {/* Delete Confirmation */}
+                                    {deleteConfirm === product.id && (
+                                        <div className="mt-3 p-3 bg-red-50 rounded-lg border border-red-200">
+                                            <p className="text-sm text-red-700 mb-2">Delete this product?</p>
+                                            <div className="flex gap-2">
+                                                <button
+                                                    onClick={() => handleDelete(product.id)}
+                                                    className="flex-1 py-2 text-sm font-medium text-white bg-red-600 rounded-lg touch-manipulation"
+                                                >
+                                                    Delete
+                                                </button>
+                                                <button
+                                                    onClick={() => setDeleteConfirm(null)}
+                                                    className="flex-1 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg touch-manipulation"
+                                                >
+                                                    Cancel
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+                ) : (
+                    <div className="bg-white rounded-lg p-8 text-center border border-gray-200">
+                        {filter === 'expiring' ? (
+                            <>
+                                <div className="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
+                                    <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                                <p className="text-sm font-medium text-gray-900">No products expiring soon</p>
+                                <p className="text-xs text-gray-500 mt-1">All products are within safe expiry range</p>
+                            </>
+                        ) : filter === 'lowStock' ? (
+                            <>
+                                <div className="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
+                                    <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                                <p className="text-sm font-medium text-gray-900">No low stock products</p>
+                                <p className="text-xs text-gray-500 mt-1">All products are well-stocked</p>
+                            </>
+                        ) : (
+                            <>
+                                <p className="text-sm font-medium text-gray-900">No products found</p>
+                                <p className="text-xs text-gray-500 mt-1">Add your first product to get started</p>
+                            </>
+                        )}
+                    </div>
+                )}
+            </div>
+
+            {/* Desktop Table View */}
+            <div className="hidden sm:block bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden" id="inventory-table-container">
+                <div className="overflow-x-auto table-scroll-mobile">
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-50">
                             <tr>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product Name</th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SKU</th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price (MRP)</th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Expiry</th>
-                                <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                <th scope="col" className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product Name</th>
+                                <th scope="col" className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">SKU</th>
+                                <th scope="col" className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">Category</th>
+                                <th scope="col" className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
+                                <th scope="col" className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                                <th scope="col" className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">Expiry</th>
+                                <th scope="col" className="px-4 lg:px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
                             {loading ? (
-                                <tr>
-                                    <td colSpan={7} className="px-6 py-4 text-center text-sm text-gray-500">Loading products...</td>
-                                </tr>
+                                // Skeleton Loader Rows
+                                <>
+                                    {[...Array(5)].map((_, i) => (
+                                        <tr key={i} className="animate-pulse">
+                                            <td className="px-6 py-4">
+                                                <div className="h-4 bg-gray-200 rounded w-32 mb-2"></div>
+                                                <div className="h-3 bg-gray-100 rounded w-24"></div>
+                                            </td>
+                                            <td className="px-6 py-4"><div className="h-4 bg-gray-200 rounded w-20"></div></td>
+                                            <td className="px-6 py-4"><div className="h-6 bg-gray-100 rounded-md w-16"></div></td>
+                                            <td className="px-6 py-4"><div className="h-6 bg-gray-100 rounded-md w-12"></div></td>
+                                            <td className="px-6 py-4"><div className="h-4 bg-gray-200 rounded w-14"></div></td>
+                                            <td className="px-6 py-4"><div className="h-4 bg-gray-200 rounded w-20"></div></td>
+                                            <td className="px-6 py-4">
+                                                <div className="flex justify-center gap-2">
+                                                    <div className="h-8 w-8 bg-gray-200 rounded-md"></div>
+                                                    <div className="h-8 w-8 bg-gray-200 rounded-md"></div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </>
                             ) : products.length > 0 ? (
                                 products.map((product) => {
                                     const isLowStock = product.quantity <= product.reorderLevel;
@@ -197,7 +352,9 @@ const InventoryList: React.FC = () => {
                                                     {product.quantity} {product.unit}
                                                 </span>
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">₹{product.mrp}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                {product.mrp && product.mrp > 0 ? `₹${product.mrp}` : <span className="text-gray-400">-</span>}
+                                            </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm">
                                                 {product.expiryDate ? (
                                                     <span className={clsx(isExpiring ? "text-red-600 font-medium" : "text-gray-500")}>
@@ -245,7 +402,88 @@ const InventoryList: React.FC = () => {
                                 })
                             ) : (
                                 <tr>
-                                    <td colSpan={7} className="px-6 py-10 text-center text-sm text-gray-500">No products found.</td>
+                                    <td colSpan={7} className="px-6 py-16 text-center">
+                                        {/* Contextual Empty State based on filter */}
+                                        <div className="flex flex-col items-center justify-center">
+                                            {filter === 'expiring' ? (
+                                                <>
+                                                    <div className="w-20 h-20 mb-6 relative">
+                                                        <div className="absolute inset-0 bg-gradient-to-br from-green-100 to-green-200 rounded-2xl transform rotate-6"></div>
+                                                        <div className="absolute inset-0 bg-white rounded-2xl shadow-lg flex items-center justify-center">
+                                                            <svg className="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                            </svg>
+                                                        </div>
+                                                    </div>
+                                                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No products expiring soon</h3>
+                                                    <p className="text-gray-500 text-sm max-w-sm">
+                                                        Great news! None of your products are nearing their expiry date.
+                                                    </p>
+                                                </>
+                                            ) : filter === 'lowStock' ? (
+                                                <>
+                                                    <div className="w-20 h-20 mb-6 relative">
+                                                        <div className="absolute inset-0 bg-gradient-to-br from-green-100 to-green-200 rounded-2xl transform rotate-6"></div>
+                                                        <div className="absolute inset-0 bg-white rounded-2xl shadow-lg flex items-center justify-center">
+                                                            <svg className="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                            </svg>
+                                                        </div>
+                                                    </div>
+                                                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No low stock products</h3>
+                                                    <p className="text-gray-500 text-sm max-w-sm">
+                                                        All your products are well-stocked. Keep up the good work!
+                                                    </p>
+                                                </>
+                                            ) : searchTerm ? (
+                                                <>
+                                                    <div className="w-20 h-20 mb-6 relative">
+                                                        <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl transform rotate-6"></div>
+                                                        <div className="absolute inset-0 bg-white rounded-2xl shadow-lg flex items-center justify-center">
+                                                            <MagnifyingGlassIcon className="w-10 h-10 text-gray-400" />
+                                                        </div>
+                                                    </div>
+                                                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No results found</h3>
+                                                    <p className="text-gray-500 text-sm max-w-sm">
+                                                        No products match "{searchTerm}". Try a different search term.
+                                                    </p>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <div className="w-24 h-24 mb-6 relative">
+                                                        <div className="absolute inset-0 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl transform rotate-6"></div>
+                                                        <div className="absolute inset-0 bg-white rounded-2xl shadow-lg flex items-center justify-center">
+                                                            <svg className="w-12 h-12 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                                                            </svg>
+                                                        </div>
+                                                    </div>
+
+                                                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No products yet</h3>
+                                                    <p className="text-gray-500 text-sm mb-6 max-w-sm">
+                                                        Your inventory is empty. Add products manually or import from a supplier bill to get started.
+                                                    </p>
+
+                                                    <div className="flex flex-wrap gap-3 justify-center">
+                                                        <button
+                                                            onClick={() => setIsAddModalOpen(true)}
+                                                            className="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-700 text-white font-semibold rounded-lg hover:bg-blue-800 transition-colors shadow-lg shadow-blue-500/25"
+                                                        >
+                                                            <PlusIcon className="h-5 w-5" />
+                                                            Add Product
+                                                        </button>
+                                                        <button
+                                                            onClick={() => setIsImportModalOpen(true)}
+                                                            className="inline-flex items-center gap-2 px-4 py-2.5 bg-white text-gray-700 font-semibold rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors"
+                                                        >
+                                                            <ArrowUpTrayIcon className="h-5 w-5" />
+                                                            Import from Bill
+                                                        </button>
+                                                    </div>
+                                                </>
+                                            )}
+                                        </div>
+                                    </td>
                                 </tr>
                             )}
                         </tbody>

@@ -76,7 +76,7 @@ const OnboardingWelcome: React.FC<OnboardingWelcomeProps> = ({ isOpen, onClose, 
                         </div>
 
                         <div className="grid grid-cols-1 gap-3 w-full">
-                            {languages.map((lang, idx) => (
+                            {languages.map((lang) => (
                                 <button
                                     key={lang.id}
                                     onClick={() => onStart(lang.id)}

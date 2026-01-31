@@ -33,16 +33,13 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onSu
     const [dosageForm, setDosageForm] = useState('TABLET');
     const [formData, setFormData] = useState({
         name: '',
-        genericName: '',
-        sku: '',
-        barcode: '',
         category: 'MEDICINE',
-        manufacturer: '',
+        supplier: '', // Renamed from manufacturer
         costPrice: '',
         sellingPrice: '',
         mrp: '',
         taxPercent: '0',
-        quantity: '',
+        quantity: '', // Opening Stock
         minStockLevel: '10',
         reorderLevel: '20',
         unit: 'pcs',
@@ -59,33 +56,40 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onSu
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
+    // Auto-set Selling Price = MRP when MRP changes
+    const handleMrpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setFormData((prev) => ({
+            ...prev,
+            mrp: value,
+            sellingPrice: value, // MRP = Selling Price
+        }));
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
 
         try {
-            // Prepare payload with number conversions
             const costPrice = parseFloat(formData.costPrice);
             const sellingPrice = parseFloat(formData.sellingPrice);
             const mrp = parseFloat(formData.mrp);
             const quantity = parseInt(formData.quantity);
 
             if (isNaN(costPrice) || isNaN(sellingPrice) || isNaN(mrp) || isNaN(quantity)) {
-                toast.error('Please fill all required numeric fields with valid numbers (Cost Price, Selling Price, MRP, Opening Stock)');
+                toast.error('Please fill all required numeric fields (Cost Price, Selling Price, MRP, Opening Stock)');
                 setLoading(false);
                 return;
             }
 
-            // Prepare clean payload
-            // Explicitly map ONLY the fields we want to send, or clean the auto-mapped ones
+            // Generate SKU automatically
+            const autoSku = `${formData.name.substring(0, 3).toUpperCase()}-${formData.batchNumber || Date.now().toString().substring(0, 6)}-${Math.floor(Math.random() * 999)}`;
+
             const payload: any = {
                 name: formData.name,
-                genericName: formData.genericName || undefined,
-                sku: formData.sku,
-                barcode: formData.barcode || undefined, // Send as undefined if empty
+                sku: autoSku, // Auto-generated
                 category: formData.category,
-                manufacturer: formData.manufacturer || undefined,
-                description: undefined, // Add if you have description field
+                supplier: formData.supplier || undefined,
 
                 costPrice,
                 sellingPrice,
@@ -100,7 +104,6 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onSu
                 batchNumber: formData.batchNumber || undefined,
                 expiryDate: formData.expiryDate ? new Date(formData.expiryDate) : undefined,
 
-                // Only include the relevant category fields
                 tabletsPerStrip: dosageForm === 'TABLET' && formData.tabletsPerStrip
                     ? parseInt(formData.tabletsPerStrip) || undefined
                     : undefined,
@@ -116,7 +119,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onSu
             onClose();
             // Reset form
             setFormData({
-                name: '', genericName: '', sku: '', barcode: '', category: 'MEDICINE', manufacturer: '',
+                name: '', category: 'MEDICINE', supplier: '',
                 costPrice: '', sellingPrice: '', mrp: '', taxPercent: '0',
                 quantity: '', minStockLevel: '10', reorderLevel: '20', unit: 'pcs',
                 batchNumber: '', expiryDate: '', tabletsPerStrip: '', qtyInMl: '',
@@ -156,7 +159,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onSu
                             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                         >
-                            <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl">
+                            <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-2xl">
                                 <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                                     <div className="flex items-center justify-between mb-5">
                                         <Dialog.Title as="h3" className="text-xl font-semibold leading-6 text-gray-900">
@@ -180,41 +183,6 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onSu
                                                     value={formData.name}
                                                     onChange={handleChange}
                                                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2"
-                                                />
-                                            </div>
-
-                                            <div>
-                                                <label className="block text-sm font-medium text-gray-700">Generic Name</label>
-                                                <input
-                                                    type="text"
-                                                    name="genericName"
-                                                    value={formData.genericName}
-                                                    onChange={handleChange}
-                                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2"
-                                                />
-                                            </div>
-
-                                            <div>
-                                                <label className="block text-sm font-medium text-gray-700">SKU / Code *</label>
-                                                <input
-                                                    type="text"
-                                                    name="sku"
-                                                    required
-                                                    value={formData.sku}
-                                                    onChange={handleChange}
-                                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2"
-                                                />
-                                            </div>
-
-                                            <div>
-                                                <label className="block text-sm font-medium text-gray-700">Barcode</label>
-                                                <input
-                                                    type="text"
-                                                    name="barcode"
-                                                    value={formData.barcode}
-                                                    onChange={handleChange}
-                                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2"
-                                                    placeholder="Scan or enter barcode"
                                                 />
                                             </div>
 
@@ -269,6 +237,18 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onSu
                                                     />
                                                 </div>
                                             )}
+
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700">Supplier</label>
+                                                <input
+                                                    type="text"
+                                                    name="supplier"
+                                                    value={formData.supplier}
+                                                    onChange={handleChange}
+                                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2"
+                                                    placeholder="Supplier name"
+                                                />
+                                            </div>
                                         </div>
 
                                         <div className="border-t border-gray-200"></div>
@@ -287,24 +267,24 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onSu
                                                 />
                                             </div>
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700">Selling Price *</label>
-                                                <input
-                                                    type="number"
-                                                    name="sellingPrice"
-                                                    required
-                                                    value={formData.sellingPrice}
-                                                    onChange={handleChange}
-                                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2"
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className="block text-sm font-medium text-gray-700">MRP *</label>
+                                                <label className="block text-sm font-medium text-gray-700">MRP * (= Selling Price)</label>
                                                 <input
                                                     id="product-mrp-input"
                                                     type="number"
                                                     name="mrp"
                                                     required
                                                     value={formData.mrp}
+                                                    onChange={handleMrpChange}
+                                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700">Selling Price *</label>
+                                                <input
+                                                    type="number"
+                                                    name="sellingPrice"
+                                                    required
+                                                    value={formData.sellingPrice}
                                                     onChange={handleChange}
                                                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2"
                                                 />
@@ -319,7 +299,6 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onSu
                                                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2"
                                                 />
                                             </div>
-
                                         </div>
 
                                         <div className="border-t border-gray-200"></div>
@@ -339,11 +318,11 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onSu
                                                 />
                                             </div>
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700">Reorder Level</label>
+                                                <label className="block text-sm font-medium text-gray-700">Batch Number</label>
                                                 <input
-                                                    type="number"
-                                                    name="reorderLevel"
-                                                    value={formData.reorderLevel}
+                                                    type="text"
+                                                    name="batchNumber"
+                                                    value={formData.batchNumber}
                                                     onChange={handleChange}
                                                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2"
                                                 />
@@ -359,21 +338,11 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onSu
                                                 />
                                             </div>
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700">Batch Number</label>
+                                                <label className="block text-sm font-medium text-gray-700">Reorder Level</label>
                                                 <input
-                                                    type="text"
-                                                    name="batchNumber"
-                                                    value={formData.batchNumber}
-                                                    onChange={handleChange}
-                                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2"
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className="block text-sm font-medium text-gray-700">Manufacturer</label>
-                                                <input
-                                                    type="text"
-                                                    name="manufacturer"
-                                                    value={formData.manufacturer}
+                                                    type="number"
+                                                    name="reorderLevel"
+                                                    value={formData.reorderLevel}
                                                     onChange={handleChange}
                                                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2"
                                                 />
@@ -385,7 +354,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onSu
                                                 id="save-product-btn"
                                                 type="submit"
                                                 disabled={loading}
-                                                className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-50 sm:ml-3 sm:w-auto disabled:opacity-50"
+                                                className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto disabled:opacity-50"
                                             >
                                                 {loading ? 'Saving...' : 'Save Product'}
                                             </button>
