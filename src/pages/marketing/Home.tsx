@@ -573,10 +573,10 @@ const Contact = () => {
                             label: "Email",
                             value: (
                                 <a
-                                    href="mailto:medix.pos@gmail.com"
+                                    href="mailto:techcodex.hub@gmail.com"
                                     className="text-inherit no-underline hover:underline"
                                 >
-                                    medix.pos@gmail.com
+                                    techcodex.hub@gmail.com
                                 </a>
                             )
                         }
