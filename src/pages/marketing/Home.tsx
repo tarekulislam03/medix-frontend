@@ -341,16 +341,16 @@ const Hero = () => {
 
             <div className="max-w-[860px] text-center relative z-10 w-full">
                 <h1 className={clsx(
-                    "font-['Syne',sans-serif] font-extrabold text-[clamp(2.2rem,5vw,5rem)] leading-[1.1] md:leading-[1.08] tracking-[-0.02em] transition-all duration-1000 delay-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
+                    "font-['Syne',sans-serif] font-extrabold text-[clamp(1.75rem,5vw,5rem)] leading-[1.2] md:leading-[1.08] tracking-[-0.02em] transition-all duration-1000 delay-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
                     visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[50px]"
                 )}>
                     The Future of
-                    <br />
-                    <span className="bg-gradient-to-br from-[var(--accent-bright)] via-[var(--accent)] to-[var(--accent)] bg-clip-text text-transparent drop-shadow-[0_0_40px_rgba(37,99,235,0.2)]">
+                    <br className="hidden md:block" />{" "}
+                    <span className="bg-gradient-to-br from-[var(--accent-bright)] via-[var(--accent)] to-[var(--accent)] bg-clip-text text-transparent drop-shadow-[0_0_40px_rgba(37,99,235,0.2)] block md:inline mt-2 md:mt-0">
                         Pharmacy Management
                     </span>
-                    <br />
-                    <span className="text-[0.82em] font-bold text-[var(--text-secondary)]">is already here</span>
+                    <br className="hidden md:block" />
+                    <span className="text-[0.6em] md:text-[0.82em] font-bold text-[var(--text-secondary)] block mt-2 md:mt-0">is already here</span>
                 </h1>
 
                 <p className={clsx(
