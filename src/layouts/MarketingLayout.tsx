@@ -1,5 +1,4 @@
 import { Outlet, Link } from 'react-router-dom';
-import { Fragment } from 'react';
 
 const MarketingLayout = () => {
     return (

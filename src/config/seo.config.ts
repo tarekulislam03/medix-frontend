@@ -3,7 +3,7 @@ export const SEO_CONFIG = {
     titleDefault: 'MediX - Pharmacy POS & Management Software',
     titleTemplate: '%s | MediX',
     description: 'MediX is a comprehensive pharmacy POS and management solution. Manage inventory, billing, customers, and analytics efficiently.',
-    url: 'https://medix.com', // TODO: Update with actual production URL
+    url: 'https://medix-peach.vercel.app', // TODO: Update with actual production URL
     twitter: {
         handle: '@medix',
         site: '@medix',
@@ -12,11 +12,11 @@ export const SEO_CONFIG = {
     openGraph: {
         type: 'website',
         locale: 'en_US',
-        url: 'https://medix.com',
+        url: 'https://medix-peach.vercel.app',
         site_name: 'MediX',
         images: [
             {
-                url: 'https://medix.com/og-image.jpg',
+                url: 'https://medix-peach.vercel.app/og-image.jpg',
                 width: 1200,
                 height: 630,
                 alt: 'MediX Pharmacy POS',
