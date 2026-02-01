@@ -17,27 +17,6 @@ function useReveal() {
     }, []);
 }
 
-function useCounter(target: number, duration = 1800) {
-    const [count, setCount] = useState(0);
-    const ref = useRef<HTMLSpanElement>(null);
-    useEffect(() => {
-        const observer = new IntersectionObserver(([e]) => {
-            if (!e.isIntersecting) return;
-            const start = performance.now();
-            const step = (now: number) => {
-                const p = Math.min((now - start) / duration, 1);
-                const ease = 1 - Math.pow(1 - p, 3);
-                setCount(Math.round(ease * target));
-                if (p < 1) requestAnimationFrame(step);
-            };
-            requestAnimationFrame(step);
-            observer.disconnect();
-        }, { threshold: 0.5 });
-        if (ref.current) observer.observe(ref.current);
-        return () => observer.disconnect();
-    }, [target, duration]);
-    return { count, ref };
-}
 
 function useStickyNav() {
     const [scrolled, setScrolled] = useState(false);
@@ -274,23 +253,6 @@ const Icons = {
     ),
 };
 
-const StatCounter = ({ target, suffix, label }: { target: number; suffix: string; label: string }) => {
-    const { count, ref } = useCounter(target);
-    return (
-        <div className="reveal text-center">
-            <span
-                ref={ref}
-                className="inline-block text-[clamp(2rem,4vw,3rem)] font-['Syne',sans-serif] font-extrabold bg-gradient-to-br from-[var(--accent-bright)] to-[var(--accent)] bg-clip-text text-transparent"
-            >
-                {count.toLocaleString()}
-                {suffix}
-            </span>
-            <p className="mt-1.5 text-[var(--text-secondary)] text-[0.82rem] uppercase tracking-[1.5px] font-medium">
-                {label}
-            </p>
-        </div>
-    );
-};
 
 const Navbar = () => {
     const scrolled = useStickyNav();
