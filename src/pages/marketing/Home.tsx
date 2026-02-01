@@ -336,12 +336,12 @@ const Hero = () => {
     useEffect(() => { setTimeout(() => setVisible(true), 100); }, []);
 
     return (
-        <section id="home" className="min-h-screen flex items-center justify-center relative pt-[120px] pb-20 px-6">
+        <section id="home" className="min-h-screen flex items-center justify-center relative pt-[100px] md:pt-[120px] pb-20 px-4 md:px-6">
             {/* Top badge removed as per request */}
 
-            <div className="max-w-[860px] text-center relative z-10">
+            <div className="max-w-[860px] text-center relative z-10 w-full">
                 <h1 className={clsx(
-                    "font-['Syne',sans-serif] font-extrabold text-[clamp(2.8rem,6.5vw,5rem)] leading-[1.08] tracking-[-0.02em] transition-all duration-1000 delay-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
+                    "font-['Syne',sans-serif] font-extrabold text-[clamp(2.2rem,5vw,5rem)] leading-[1.1] md:leading-[1.08] tracking-[-0.02em] transition-all duration-1000 delay-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
                     visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[50px]"
                 )}>
                     The Future of
@@ -354,7 +354,7 @@ const Hero = () => {
                 </h1>
 
                 <p className={clsx(
-                    "text-[var(--text-secondary)] text-[clamp(1rem,1.8vw,1.15rem)] max-w-[640px] mx-auto mt-7 leading-[1.7] font-normal transition-all duration-900 delay-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
+                    "text-[var(--text-secondary)] text-[clamp(1rem,1.8vw,1.15rem)] max-w-[640px] mx-auto mt-6 md:mt-7 leading-[1.6] md:leading-[1.7] font-normal transition-all duration-900 delay-500 ease-[cubic-bezier(0.22,1,0.36,1)] px-2",
                     visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[30px]"
                 )}>
                     An all-in-one Pharmacy Store Management Software designed for modern pharmacies. Streamline regular customers, inventory, billing, and sales — all in one seamless cloud-powered software.
@@ -362,18 +362,18 @@ const Hero = () => {
 
                 {/* CTA Buttons */}
                 <div className={clsx(
-                    "flex items-center justify-center gap-4 mt-11 flex-wrap transition-all duration-900 delay-700 ease-[cubic-bezier(0.22,1,0.36,1)]",
+                    "flex flex-col sm:flex-row items-center justify-center gap-4 mt-8 md:mt-11 w-full sm:w-auto transition-all duration-900 delay-700 ease-[cubic-bezier(0.22,1,0.36,1)]",
                     visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[30px]"
                 )}>
                     <a
                         href="/register"
-                        className="bg-gradient-to-br from-[var(--accent)] to-[#2c6aad] text-white no-underline px-9 py-3.5 rounded-full text-[0.92rem] font-semibold tracking-[0.3px] shadow-[0_6px_30px_rgba(74,144,217,0.35)] flex items-center gap-2 transition-all duration-250 hover:-translate-y-0.5 hover:shadow-[0_10px_40px_rgba(74,144,217,0.5)]"
+                        className="w-full sm:w-auto bg-gradient-to-br from-[var(--accent)] to-[#2c6aad] text-white no-underline px-9 py-3.5 rounded-full text-[0.92rem] font-semibold tracking-[0.3px] shadow-[0_6px_30px_rgba(74,144,217,0.35)] flex items-center justify-center gap-2 transition-all duration-250 hover:-translate-y-0.5 hover:shadow-[0_10px_40px_rgba(74,144,217,0.5)]"
                     >
                         Use MediX for Free <Icons.Arrow />
                     </a>
                     <a
                         href="tel:+918101402916"
-                        className="text-[var(--text-primary)] no-underline px-8 py-3.5 rounded-full text-[0.92rem] font-medium border border-[rgba(74,144,217,0.3)] transition-all duration-300 hover:border-[rgba(74,144,217,0.6)] hover:bg-[rgba(74,144,217,0.06)]"
+                        className="w-full sm:w-auto text-[var(--text-primary)] no-underline px-8 py-3.5 rounded-full text-[0.92rem] font-medium border border-[rgba(74,144,217,0.3)] transition-all duration-300 hover:border-[rgba(74,144,217,0.6)] hover:bg-[rgba(74,144,217,0.06)] flex items-center justify-center"
                     >
                         Call Now For Assistance
                     </a>
