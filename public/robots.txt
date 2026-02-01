@@ -16,4 +16,4 @@ Disallow: /verify-email
 Disallow: /verify-otp
 Disallow: /api
 
-Sitemap: https://medix.com/sitemap.xml
+Sitemap: https://medix-peach.vercel.app/sitemap.xml
