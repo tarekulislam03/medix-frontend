@@ -442,7 +442,7 @@ const FeatureCard = ({ icon, title, desc, tag, delay }: typeof featureData[0] & 
 };
 
 const Features = () => (
-    <section id="features" className="relative z-10 py-[120px] px-6">
+    <section id="features" className="relative z-10 py-[60px] md:py-[120px] px-6">
         <div className="max-w-[1200px] mx-auto">
             <div className="reveal text-center mb-[72px]">
                 <span className="inline-block bg-[rgba(74,144,217,0.08)] border border-[rgba(74,144,217,0.2)] text-[var(--accent-bright)] text-[0.7rem] font-semibold tracking-[1.8px] uppercase px-[18px] py-[6px] rounded-[20px] mb-6">
@@ -467,7 +467,7 @@ const Features = () => (
 );
 
 const About = () => (
-    <section id="about" className="relative z-10 py-[120px] px-6">
+    <section id="about" className="relative z-10 py-[60px] md:py-[120px] px-6">
         <div className="max-w-[1100px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
             {/* Left: Visual */}
             <div className="reveal-left relative">
@@ -551,7 +551,7 @@ const Contact = () => {
     };
 
     return (
-        <section id="contact" className="relative z-10 py-[120px] px-6">
+        <section id="contact" className="relative z-10 py-[60px] md:py-[120px] px-6">
             <div className="max-w-[1100px] mx-auto grid grid-cols-1 md:grid-cols-[1fr_1.2fr] gap-20 items-start">
                 <div className="reveal-left">
                     <span className="inline-block bg-[rgba(74,144,217,0.08)] border border-[rgba(74,144,217,0.2)] text-[var(--accent-bright)] text-[0.7rem] font-semibold tracking-[1.8px] uppercase px-[18px] py-[6px] rounded-[20px] mb-6">
