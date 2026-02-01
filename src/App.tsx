@@ -4,6 +4,7 @@ import { AuthProvider } from '@/context/AuthContext';
 import { TutorialProvider } from '@/context/TutorialContext';
 import ProtectedRoute from '@/components/common/ProtectedRoute';
 import DashboardLayout from '@/layouts/DashboardLayout';
+import MarketingLayout from '@/layouts/MarketingLayout';
 import TutorialOverlay from '@/components/tutorial/TutorialOverlay';
 
 // Lazy load pages
@@ -22,6 +23,13 @@ const Settings = lazy(() => import('@/pages/Settings'));
 const PaymentStatus = lazy(() => import('@/pages/PaymentStatus'));
 const Help = lazy(() => import('@/pages/Help'));
 
+// Marketing Pages
+const Home = lazy(() => import('@/pages/marketing/Home'));
+const Features = lazy(() => import('@/pages/marketing/Features'));
+const Pricing = lazy(() => import('@/pages/marketing/Pricing'));
+const About = lazy(() => import('@/pages/marketing/About'));
+const Contact = lazy(() => import('@/pages/marketing/Contact'));
+
 const LoadingFallback = () => (
   <div className="flex h-screen w-full items-center justify-center bg-gray-50">
     <div className="h-16 w-16 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600"></div>
@@ -38,6 +46,15 @@ function App() {
             <TutorialOverlay />
 
             <Routes>
+              {/* Marketing Routes (Public & Indexable) */}
+              <Route element={<MarketingLayout />}>
+                <Route path="/" element={<Home />} />
+                <Route path="/features" element={<Features />} />
+                <Route path="/pricing" element={<Pricing />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+              </Route>
+
               {/* Public Auth Routes */}
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
@@ -47,20 +64,20 @@ function App() {
               <Route path="/verify-otp" element={<VerifyOTP />} />
 
               {/* Protected Routes */}
-              <Route path="/" element={
+              <Route element={
                 <ProtectedRoute>
                   <DashboardLayout />
                 </ProtectedRoute>
               }>
-                <Route index element={<Navigate to="/dashboard" replace />} />
-                <Route path="dashboard" element={<Dashboard />} />
-                <Route path="inventory" element={<Inventory />} />
-                <Route path="pos" element={<POS />} />
-                <Route path="customers" element={<Customers />} />
-                <Route path="analytics" element={<Analytics />} />
-                <Route path="settings" element={<Settings />} />
-                <Route path="payment/status" element={<PaymentStatus />} />
-                <Route path="help" element={<Help />} />
+                {/* Dashboard is now explicitly at /dashboard */}
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/inventory" element={<Inventory />} />
+                <Route path="/pos" element={<POS />} />
+                <Route path="/customers" element={<Customers />} />
+                <Route path="/analytics" element={<Analytics />} />
+                <Route path="/settings" element={<Settings />} />
+                <Route path="/payment/status" element={<PaymentStatus />} />
+                <Route path="/help" element={<Help />} />
               </Route>
 
               {/* Fallback */}

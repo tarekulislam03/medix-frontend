@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /inventory
+Disallow: /pos
+Disallow: /customers
+Disallow: /analytics
+Disallow: /settings
+Disallow: /payment
+Disallow: /help
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /verify-email
+Disallow: /verify-otp
+Disallow: /api
+
+Sitemap: https://medix.com/sitemap.xml

@@ -4,6 +4,8 @@ import { useAuth } from '@/hooks/useAuth';
 import api from '@/services/api';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 
+import SEO from '@/components/common/SEO';
+
 const Login: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -118,6 +120,7 @@ const Login: React.FC = () => {
 
     return (
         <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 py-12 px-4 sm:px-6 lg:px-8">
+            <SEO title="Login" noindex={true} />
             {/* Background decoration */}
             <div className="absolute inset-0 overflow-hidden">
                 <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl"></div>

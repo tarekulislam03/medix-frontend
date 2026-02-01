@@ -3,12 +3,14 @@ import { Outlet } from 'react-router-dom';
 import Sidebar from '@/components/layout/Sidebar';
 import Topbar from '@/components/layout/Topbar';
 import MobileBottomNav from '@/components/layout/MobileBottomNav';
+import SEO from '@/components/common/SEO';
 
 const DashboardLayout: React.FC = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
     return (
         <div className="flex h-screen bg-gray-50 overflow-hidden">
+            <SEO title="Dashboard" noindex={true} />
             {/* Sidebar - Hidden on mobile, visible on lg+ */}
             <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
 
