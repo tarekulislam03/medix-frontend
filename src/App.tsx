@@ -4,7 +4,6 @@ import { AuthProvider } from '@/context/AuthContext';
 import { TutorialProvider } from '@/context/TutorialContext';
 import ProtectedRoute from '@/components/common/ProtectedRoute';
 import DashboardLayout from '@/layouts/DashboardLayout';
-import MarketingLayout from '@/layouts/MarketingLayout';
 import TutorialOverlay from '@/components/tutorial/TutorialOverlay';
 
 // Lazy load pages
@@ -24,11 +23,8 @@ const PaymentStatus = lazy(() => import('@/pages/PaymentStatus'));
 const Help = lazy(() => import('@/pages/Help'));
 
 // Marketing Pages
+// Marketing Pages
 const Home = lazy(() => import('@/pages/marketing/Home'));
-const Features = lazy(() => import('@/pages/marketing/Features'));
-const Pricing = lazy(() => import('@/pages/marketing/Pricing'));
-const About = lazy(() => import('@/pages/marketing/About'));
-const Contact = lazy(() => import('@/pages/marketing/Contact'));
 
 const LoadingFallback = () => (
   <div className="flex h-screen w-full items-center justify-center bg-gray-50">
@@ -47,13 +43,7 @@ function App() {
 
             <Routes>
               {/* Marketing Routes (Public & Indexable) */}
-              <Route element={<MarketingLayout />}>
-                <Route path="/" element={<Home />} />
-                <Route path="/features" element={<Features />} />
-                <Route path="/pricing" element={<Pricing />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/contact" element={<Contact />} />
-              </Route>
+              <Route path="/" element={<Home />} />
 
               {/* Public Auth Routes */}
               <Route path="/login" element={<Login />} />

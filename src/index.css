@@ -1,421 +1,214 @@
 @import "tailwindcss";
 
-/* ============================================
-   DESIGN SYSTEM - CSS CUSTOM PROPERTIES
-   ============================================ */
-
 :root {
-    /* Primary Colors - Deep Navy Blue for Professional Look */
-    --color-primary-50: #eff6ff;
-    --color-primary-100: #dbeafe;
-    --color-primary-200: #bfdbfe;
-    --color-primary-300: #93c5fd;
-    --color-primary-400: #60a5fa;
-    --color-primary-500: #3b82f6;
-    --color-primary-600: #1e40af;
-    /* Main primary - darker blue */
-    --color-primary-700: #1e3a8a;
-    /* Deepest navy */
-    --color-primary-800: #1e3a8a;
-    --color-primary-900: #1e3a8a;
+    /* Colors from Home.tsx - LIGHT THEME UPDATE */
+    --navy: #f1f5f9;
+    /* Slate 100 - Dimmer off-white */
+    --navy-mid: #e2e8f0;
+    /* Slate 200 */
+    --navy-light: #cbd5e1;
+    /* Slate 300 */
+    --accent: #2563eb;
+    /* Blue 600 - Readable on white */
+    --accent-bright: #3b82f6;
+    /* Blue 500 */
+    --accent-glow: rgba(37, 99, 235, 0.15);
+    --accent-glow-strong: rgba(37, 99, 235, 0.25);
+    --text-primary: #0f172a;
+    /* Slate 900 - Very dark text */
+    --text-secondary: #475569;
+    /* Slate 600 */
+    --text-muted: #64748b;
+    /* Slate 500 */
+    --card-bg: rgba(255, 255, 255, 0.7);
+    /* White with opacity */
+    --card-border: rgba(37, 99, 235, 0.15);
+    --radius: 12px;
+
+    /* Legacy Design System vars (updated for light compatibility) */
+    --primary-blue: #2563eb;
+    --dark-blue: #1e40af;
+    --light-blue: #dbeafe;
+    --bg-light: #f1f5f9;
+    --text-dark: #0f172a;
+    --text-gray: #475569;
 }
 
 body {
-    background-color: #f9fafb;
-    /* gray-50 */
+    font-family: 'Inter', sans-serif;
+    background-color: var(--navy);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
 }
 
-/* ============================================
-   SKELETON LOADER ANIMATION
-   ============================================ */
-
-@keyframes skeleton-shimmer {
-    0% {
-        background-position: -200% 0;
-    }
-
-    100% {
-        background-position: 200% 0;
-    }
-}
-
-.skeleton {
-    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-    background-size: 200% 100%;
-    animation: skeleton-shimmer 1.5s ease-in-out infinite;
-    border-radius: 4px;
-}
-
-.skeleton-text {
-    height: 1rem;
-    margin-bottom: 0.5rem;
-}
-
-.skeleton-title {
-    height: 1.5rem;
-    width: 60%;
-    margin-bottom: 0.75rem;
-}
-
-.skeleton-card {
-    height: 100px;
-    border-radius: 12px;
-}
-
-.skeleton-chart {
-    height: 200px;
-    border-radius: 8px;
-}
-
-/* ============================================
-   ENHANCED BUTTON STYLES
-   ============================================ */
-
-.btn-primary {
-    background-color: var(--color-primary-600);
-    transition: all 0.2s ease;
-}
-
-.btn-primary:hover {
-    background-color: var(--color-primary-700);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
-}
-
-/* ============================================
-   FORM VALIDATION STATES
-   ============================================ */
-
-.input-valid {
-    border-color: #10b981 !important;
-    box-shadow: 0 0 0 1px #10b981;
-}
-
-.input-error {
-    border-color: #ef4444 !important;
-    box-shadow: 0 0 0 1px #ef4444;
-}
-
-.input-valid:focus {
-    outline: 2px solid #10b981;
-    outline-offset: 1px;
-}
-
-.input-error:focus {
-    outline: 2px solid #ef4444;
-    outline-offset: 1px;
-}
-
-/* ============================================
-   TUTORIAL ANIMATIONS
-   ============================================ */
-
-/* Confetti falling animation */
-@keyframes confetti-fall {
-    0% {
-        transform: translateY(0) rotate(0deg);
-        opacity: 1;
-    }
-
-    100% {
-        transform: translateY(100vh) rotate(720deg);
-        opacity: 0;
-    }
-}
-
-.animate-confetti {
-    animation: confetti-fall 3s ease-out forwards;
-}
-
-/* Glow pulse for spotlight ring */
-@keyframes glow-pulse {
-
-    0%,
-    100% {
-        box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
-    }
-
-    50% {
-        box-shadow: 0 0 40px rgba(59, 130, 246, 0.8);
-    }
-}
-
-.animate-glow-pulse {
-    animation: glow-pulse 2s ease-in-out infinite;
-}
-
-/* Floating mascot */
-@keyframes float {
-
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-10px);
-    }
-}
-
-.animate-float {
-    animation: float 3s ease-in-out infinite;
-}
-
-/* Tutorial tooltip entrance */
-@keyframes slide-up-fade {
-    0% {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.animate-slide-up {
-    animation: slide-up-fade 0.3s ease-out forwards;
-}
-
-/* Pointing arrow bounce */
-@keyframes point-bounce {
-
-    0%,
-    100% {
-        transform: translateX(0);
-    }
-
-    50% {
-        transform: translateX(5px);
-    }
-}
-
-.animate-point {
-    animation: point-bounce 0.8s ease-in-out infinite;
-}
-
-/* Sparkle effect */
-@keyframes sparkle {
-
-    0%,
-    100% {
-        opacity: 0;
-        transform: scale(0);
-    }
-
-    50% {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-.animate-sparkle {
-    animation: sparkle 1.5s ease-in-out infinite;
-}
-
-/* Tutorial step counter pulse */
-@keyframes step-pulse {
-
-    0%,
-    100% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.1);
-    }
-}
-
-.animate-step-pulse {
-    animation: step-pulse 0.5s ease-in-out;
-}
-
-/* ============================================
-   MOBILE-FIRST RESPONSIVE UTILITIES
-   ============================================ */
-
-/* Safe area support for notched devices */
-.safe-area-bottom {
-    padding-bottom: env(safe-area-inset-bottom, 0);
-}
-
-.safe-area-top {
-    padding-top: env(safe-area-inset-top, 0);
-}
-
-/* Touch-friendly tap targets */
-.touch-manipulation {
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-}
-
-/* Minimum tap target size (44x44px) */
-.tap-target {
-    min-width: 44px;
-    min-height: 44px;
-}
-
-/* Mobile-optimized scrolling */
-.scroll-mobile {
-    -webkit-overflow-scrolling: touch;
+html {
     scroll-behavior: smooth;
+    scroll-padding-top: 80px;
 }
 
-/* Hide scrollbar but keep scroll functionality */
-.scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
+/* ─────────────────────────────────────────────
+   ANIMATIONS
+   ───────────────────────────────────────────── */
 
-.scrollbar-hide::-webkit-scrollbar {
-    display: none;
-}
-
-/* Mobile card shadows - lighter for performance */
-@media (max-width: 640px) {
-    .shadow-sm {
-        box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+/* Orbs */
+@keyframes orbFloat {
+    0% {
+        transform: translate(0, 0) scale(1);
     }
 
-    .shadow-lg {
-        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    100% {
+        transform: translate(60px, -80px) scale(1.15);
     }
 }
 
-/* Mobile typography adjustments */
-@media (max-width: 640px) {
-    .text-responsive-xl {
-        font-size: 1.25rem;
-    }
-
-    .text-responsive-2xl {
-        font-size: 1.5rem;
-    }
-
-    .text-responsive-3xl {
-        font-size: 1.75rem;
-    }
+.animate-orbFloat {
+    animation: orbFloat 18s ease-in-out infinite alternate;
 }
 
-@media (min-width: 641px) {
-    .text-responsive-xl {
-        font-size: 1.5rem;
+/* Glow Pulse */
+@keyframes glowPulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 20px var(--accent-glow), 0 0 60px rgba(74, 144, 217, 0.08);
     }
 
-    .text-responsive-2xl {
-        font-size: 2rem;
-    }
-
-    .text-responsive-3xl {
-        font-size: 2.25rem;
+    50% {
+        box-shadow: 0 0 35px var(--accent-glow-strong), 0 0 80px rgba(74, 144, 217, 0.15);
     }
 }
 
-/* Mobile-friendly input styles */
-@media (max-width: 640px) {
 
-    input[type="text"],
-    input[type="email"],
-    input[type="password"],
-    input[type="number"],
-    input[type="search"],
-    select,
-    textarea {
-        font-size: 16px;
-        /* Prevents iOS zoom on focus */
-        min-height: 44px;
+/* Fade Reveals */
+.reveal {
+    opacity: 1;
+    /* Was 0, forcing visible for debugging */
+    transform: translateY(40px);
+    transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.reveal-left {
+    opacity: 1;
+    /* Was 0 */
+    transform: translateX(-50px);
+    transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal-left.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.reveal-right {
+    opacity: 1;
+    /* Was 0 */
+    transform: translateX(50px);
+    transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal-right.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Pulse (used in Trust Badge) */
+@keyframes pulse-opacity {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.4;
     }
 }
 
-/* Full-width mobile inputs */
-.input-mobile-full {
-    width: 100%;
+.animate-pulse-opacity {
+    animation: pulse-opacity 2s infinite;
 }
 
-@media (min-width: 640px) {
-    .input-mobile-full {
-        width: auto;
+/* Spin (used in particle canvas if needed, or icons) */
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
     }
 }
 
-/* Mobile card layout */
-.card-mobile {
-    padding: 1rem;
-    border-radius: 0.75rem;
+.animate-spin-slow {
+    animation: spin 60s linear infinite;
 }
 
-@media (min-width: 640px) {
-    .card-mobile {
-        padding: 1.5rem;
-        border-radius: 1rem;
-    }
+/* ─────────────────────────────────────────────
+   BACKGROUND ELEMENTS (moved from styled-jsx)
+   ───────────────────────────────────────────── */
+.bg-mesh {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 50% 50%, rgba(37, 99, 235, 0.03) 0%, transparent 50%);
+    /* Subtle center glow */
+    background-color: var(--navy);
 }
 
-/* Horizontal scroll container for tables on mobile */
-.table-scroll-mobile {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    margin: 0 -0.75rem;
-    padding: 0 0.75rem;
+.bg-grid {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.4;
+    background-size: 30px 30px;
+    /* Tighter grid for "graph paper" feel */
+    background-image:
+        linear-gradient(to right, #cbd5e1 1px, transparent 1px),
+        linear-gradient(to bottom, #cbd5e1 1px, transparent 1px);
+    mask-image: radial-gradient(circle at 50% 50%, black 40%, transparent 100%);
+    -webkit-mask-image: radial-gradient(circle at 50% 50%, black 40%, transparent 100%);
 }
 
-@media (min-width: 1024px) {
-    .table-scroll-mobile {
-        overflow-x: visible;
-        margin: 0;
-        padding: 0;
-    }
+.orb {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(90px);
+    /* Sharper blur for more defined shapes */
+    opacity: 0.5;
+    animation: orbFloat 30s ease-in-out infinite alternate;
 }
 
-/* Mobile-optimized grid */
-.grid-mobile-stack {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1rem;
+.orb-1 {
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+    top: -200px;
+    left: 10%;
+    animation-delay: 0s;
 }
 
-@media (min-width: 640px) {
-    .grid-mobile-stack {
-        grid-template-columns: repeat(2, 1fr);
-    }
+.orb-2 {
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(147, 197, 253, 0.12) 0%, transparent 70%);
+    bottom: -200px;
+    right: 0%;
+    animation-delay: -5s;
 }
 
-@media (min-width: 1024px) {
-    .grid-mobile-stack {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    }
-}
-
-/* Mobile button spacing */
-.btn-mobile {
-    padding: 0.75rem 1rem;
-    min-height: 44px;
-    font-size: 0.875rem;
-}
-
-@media (min-width: 640px) {
-    .btn-mobile {
-        padding: 0.5rem 1rem;
-        min-height: auto;
-    }
-}
-
-/* Reduce motion for performance and accessibility */
-@media (prefers-reduced-motion: reduce) {
-
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
-}
-
-/* Lazy loading placeholder */
-.lazy-placeholder {
-    background: linear-gradient(90deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%);
-    background-size: 200% 100%;
-    animation: skeleton-shimmer 1.5s ease-in-out infinite;
+.orb-3 {
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(219, 234, 254, 0.4) 0%, transparent 70%);
+    /* Subtle white highlight */
+    top: 30%;
+    left: 20%;
+    animation-delay: -15s;
 }
