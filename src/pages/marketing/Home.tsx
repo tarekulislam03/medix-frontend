@@ -1,10 +1,17 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import clsx from "clsx";
+import logoDark from "../../assets/logo-dark.png";
+import logoLight from "../../assets/logo-light.png";
+import productVideo from "../../assets/PRODUCT-VIDEO.mp4";
+import { Link } from 'react-router-dom';
 
 // ─────────────────────────────────────────────
-// HOOKS
+// HOOKS & UTILS
 // ─────────────────────────────────────────────
+
+function clsx(...classes: (string | undefined | null | false)[]) {
+    return classes.filter(Boolean).join(" ");
+}
 
 function useReveal() {
     useEffect(() => {
@@ -134,9 +141,9 @@ const ParticleCanvas = () => {
                 ctx.translate(p.x, p.y);
                 ctx.rotate(p.rotation);
 
-                // Color: Darker blue for visibility on light bg
-                ctx.strokeStyle = `rgba(37, 99, 235, ${p.a + 0.1})`;
-                ctx.fillStyle = `rgba(59, 130, 246, ${p.a * 0.3})`;
+                // Color: Teal for visibility on light bg
+                ctx.strokeStyle = `rgba(26, 140, 140, ${p.a + 0.1})`;
+                ctx.fillStyle = `rgba(32, 163, 163, ${p.a * 0.3})`;
                 ctx.lineWidth = 1.2;
 
                 if (p.type === 'hexagon') {
@@ -149,9 +156,9 @@ const ParticleCanvas = () => {
                     // Circle (Bubble/Pill)
                     ctx.beginPath();
                     ctx.arc(0, 0, p.r, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(147, 197, 253, ${p.a * 0.5})`; // Very light blue fill
+                    ctx.fillStyle = `rgba(130, 204, 204, ${p.a * 0.5})`; // Very light teal fill
                     ctx.fill();
-                    ctx.strokeStyle = `rgba(59, 130, 246, ${p.a * 0.8})`;
+                    ctx.strokeStyle = `rgba(32, 163, 163, ${p.a * 0.8})`;
                     ctx.stroke();
                 }
 
@@ -174,9 +181,9 @@ const ParticleCanvas = () => {
 const Icons = {
     Pharmacy: () => (
         <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-            <rect x="4" y="14" width="40" height="28" rx="4" stroke="#4a90d9" strokeWidth="2.5" fill="none" />
-            <path d="M14 14V10a10 10 0 0 1 20 0v4" stroke="#4a90d9" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-            <path d="M20 26h8M24 22v8" stroke="#5fa8f5" strokeWidth="2.5" strokeLinecap="round" />
+            <rect x="4" y="14" width="40" height="28" rx="4" stroke="#1a8c8c" strokeWidth="2.5" fill="none" />
+            <path d="M14 14V10a10 10 0 0 1 20 0v4" stroke="#1a8c8c" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+            <path d="M20 26h8M24 22v8" stroke="#20a3a3" strokeWidth="2.5" strokeLinecap="round" />
         </svg>
     ),
     Shield: () => (
@@ -241,6 +248,13 @@ const Icons = {
             <path d="M3 9l4 4 8-8" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
     ),
+    Database: () => (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <ellipse cx="12" cy="5" rx="9" ry="3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+    ),
     X: () => (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
             <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
@@ -257,24 +271,18 @@ const Icons = {
 const Navbar = () => {
     const scrolled = useStickyNav();
     const [mobile, setMobile] = useState(false);
-    const links = ["Home", "Features", "About", "Contact"];
+    const links = ["Home", "Features", "About", "Pricing", "Contact"];
 
     return (
         <nav className={clsx(
             "fixed top-0 left-0 right-0 z-[100] transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)]",
-            scrolled ? "py-3 bg-[var(--navy)]/85 backdrop-blur-[16px] border-b border-[rgba(74,144,217,0.12)]" : "py-5 bg-transparent border-b border-transparent"
+            scrolled ? "py-3 bg-[var(--navy)]/85 backdrop-blur-[16px] border-b border-[rgba(26,140,140,0.12)]" : "py-5 bg-transparent border-b border-transparent"
         )}>
             <div className="max-w-[1200px] mx-auto px-6 flex items-center justify-between">
                 {/* Logo */}
-                <a href="#home" className="no-underline flex items-center gap-2.5">
-                    <div className="relative flex items-center justify-center w-9 h-9 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg shadow-md">
-                        <div className="absolute inset-0 bg-white/10 rounded-lg" />
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-5 h-5 text-white z-10">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                        </svg>
-                        <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-cyan-400 rounded-full border-2 border-[var(--navy)] shadow-sm z-20"></div>
-                    </div>
-                    <span className="font-['Syne',sans-serif] font-extrabold text-[1.2rem] text-[var(--text-primary)] tracking-tight">
+                <a href="#home" className="no-underline flex items-center gap-3">
+                    <img src={logoDark} alt="MediX Logo" className="w-11 h-11 object-contain" />
+                    <span className="font-['Syne',sans-serif] font-extrabold text-[1.4rem] text-[var(--text-primary)] tracking-tight">
                         Medi<span className="text-[var(--accent-bright)]">X</span>
                     </span>
                 </a>
@@ -291,9 +299,16 @@ const Navbar = () => {
                             <span className="absolute bottom-[-2px] left-1/2 -translate-x-1/2 w-0 h-[2px] bg-[var(--accent-bright)] rounded-full transition-all duration-300 group-hover:w-full" />
                         </a>
                     ))}
+                    <Link
+                        to="/partner"
+                        className="text-[var(--accent)] no-underline text-[0.88rem] font-bold tracking-[0.3px] relative py-1 transition-colors duration-300 hover:text-[var(--accent-bright)] group"
+                    >
+                        Earn With Us
+                        <span className="absolute bottom-[-2px] left-1/2 -translate-x-1/2 w-0 h-[2px] bg-[var(--accent-bright)] rounded-full transition-all duration-300 group-hover:w-full" />
+                    </Link>
                     <a
                         href="#contact"
-                        className="bg-gradient-to-br from-[var(--accent)] to-[#2c6aad] text-white no-underline px-[22px] py-[9px] rounded-full text-[0.82rem] font-semibold tracking-[0.5px] shadow-[0_4px_20px_rgba(74,144,217,0.3)] transition-all duration-200 hover:-translate-y-[1px] hover:shadow-[0_6px_28px_rgba(74,144,217,0.45)]"
+                        className="bg-[var(--accent)] text-white no-underline px-[24px] py-[10px] rounded-full text-[0.88rem] font-bold tracking-[0.5px] shadow-[0_4px_20px_rgba(26,140,140,0.4)] transition-all duration-200 hover:-translate-y-[2px] hover:shadow-[0_8px_30px_rgba(26,140,140,0.6)]"
                     >
                         Get Started
                     </a>
@@ -310,22 +325,25 @@ const Navbar = () => {
 
             {/* Mobile Menu */}
             <div className={clsx(
-                "absolute top-full left-0 right-0 bg-[var(--navy)]/97 backdrop-blur-[20px] border-b border-[rgba(74,144,217,0.15)] px-6 py-5 transition-all duration-300 origin-top",
+                "absolute top-full left-0 right-0 bg-[var(--navy)]/97 backdrop-blur-[20px] border-b border-[rgba(26,140,140,0.15)] px-6 py-5 transition-all duration-300 origin-top",
                 mobile ? "opacity-100 scale-y-100 visible" : "opacity-0 scale-y-95 invisible"
             )}>
-                {[...links, "Get Started"].map((l) => (
+                {links.map((l) => (
                     <a
                         key={l}
                         href={`#${l.toLowerCase().replace(" ", "")}`}
                         onClick={() => setMobile(false)}
-                        className={clsx(
-                            "block no-underline py-3 border-b border-[rgba(74,144,217,0.08)] text-[0.92rem] font-medium",
-                            l === "Get Started" ? "text-[var(--accent-bright)]" : "text-[var(--text-secondary)]"
-                        )}
+                        className="block no-underline py-3 border-b border-[rgba(26,140,140,0.08)] text-[0.95rem] font-medium text-[var(--text-secondary)]"
                     >
                         {l}
                     </a>
                 ))}
+                <Link
+                    to="/partner"
+                    className="block no-underline py-3 border-b border-[rgba(26,140,140,0.08)] text-[0.95rem] font-bold text-[var(--accent)]"
+                >
+                    Earn With Us
+                </Link>
             </div>
         </nav>
     );
@@ -336,25 +354,20 @@ const Hero = () => {
     useEffect(() => { setTimeout(() => setVisible(true), 100); }, []);
 
     return (
-        <section id="home" className="min-h-screen flex items-center justify-center relative pt-[100px] md:pt-[120px] pb-20 px-4 md:px-6">
+        <section id="home" className="min-h-screen flex flex-col items-center justify-center relative pt-[120px] pb-24 px-4 md:px-6">
             {/* Top badge removed as per request */}
 
             <div className="max-w-[860px] text-center relative z-10 w-full">
                 <h1 className={clsx(
-                    "font-['Syne',sans-serif] font-extrabold text-[clamp(1.75rem,5vw,5rem)] leading-[1.2] md:leading-[1.08] tracking-[-0.02em] transition-all duration-1000 delay-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
+                    "font-['Syne',sans-serif] font-extrabold text-[clamp(2rem,7vw,5rem)] leading-[1.1] tracking-[-0.02em] transition-all duration-1000 delay-300 ease-[cubic-bezier(0.22,1,0.36,1)] text-[var(--text-primary)]",
                     visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[50px]"
                 )}>
-                    The Future of
-                    <br className="hidden md:block" />{" "}
-                    <span className="bg-gradient-to-br from-[var(--accent-bright)] via-[var(--accent)] to-[var(--accent)] bg-clip-text text-transparent drop-shadow-[0_0_40px_rgba(37,99,235,0.2)] block md:inline mt-2 md:mt-0">
-                        Pharmacy Management
-                    </span>
-                    <br className="hidden md:block" />
-                    <span className="text-[0.6em] md:text-[0.82em] font-bold text-[var(--text-secondary)] block mt-2 md:mt-0">is already here</span>
+                    The Future of <br className="hidden md:block" />
+                    <span className="text-[var(--accent)] drop-shadow-[0_0_40px_rgba(26,140,140,0.3)]">Pharmacy Management</span>
                 </h1>
 
                 <p className={clsx(
-                    "text-[var(--text-secondary)] text-[clamp(1rem,1.8vw,1.15rem)] max-w-[640px] mx-auto mt-6 md:mt-7 leading-[1.6] md:leading-[1.7] font-normal transition-all duration-900 delay-500 ease-[cubic-bezier(0.22,1,0.36,1)] px-2",
+                    "text-[var(--text-secondary)] text-[clamp(1rem,1.4vw,1.15rem)] max-w-[640px] mx-auto mt-6 md:mt-8 leading-[1.6] md:leading-[1.7] transition-all duration-900 delay-500 ease-[cubic-bezier(0.22,1,0.36,1)] px-2",
                     visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[30px]"
                 )}>
                     An all-in-one Pharmacy Store Management Software designed for modern pharmacies. Streamline regular customers, inventory, billing, and sales — all in one seamless cloud-powered software.
@@ -362,21 +375,38 @@ const Hero = () => {
 
                 {/* CTA Buttons */}
                 <div className={clsx(
-                    "flex flex-col sm:flex-row items-center justify-center gap-4 mt-8 md:mt-11 w-full sm:w-auto transition-all duration-900 delay-700 ease-[cubic-bezier(0.22,1,0.36,1)]",
+                    "flex flex-col sm:flex-row items-center justify-center gap-5 mt-10 md:mt-12 w-full sm:w-auto transition-all duration-900 delay-700 ease-[cubic-bezier(0.22,1,0.36,1)]",
                     visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[30px]"
                 )}>
                     <a
-                        href="/register"
-                        className="w-full sm:w-auto bg-gradient-to-br from-[var(--accent)] to-[#2c6aad] text-white no-underline px-9 py-3.5 rounded-full text-[0.92rem] font-semibold tracking-[0.3px] shadow-[0_6px_30px_rgba(74,144,217,0.35)] flex items-center justify-center gap-2 transition-all duration-250 hover:-translate-y-0.5 hover:shadow-[0_10px_40px_rgba(74,144,217,0.5)]"
+                        href="tel:+918101402916"
+                        className="w-full sm:w-auto bg-[var(--accent)] text-white no-underline px-10 py-4 rounded-full text-[1rem] font-bold tracking-[0.5px] shadow-[0_6px_30px_rgba(26,140,140,0.4)] flex items-center justify-center gap-2 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_10px_40px_rgba(26,140,140,0.6)]"
                     >
-                        Use MediX for Free <Icons.Arrow />
+                        <Icons.Phone /> Call Now
                     </a>
                     <a
-                        href="tel:+918101402916"
-                        className="w-full sm:w-auto text-[var(--text-primary)] no-underline px-8 py-3.5 rounded-full text-[0.92rem] font-medium border border-[rgba(74,144,217,0.3)] transition-all duration-300 hover:border-[rgba(74,144,217,0.6)] hover:bg-[rgba(74,144,217,0.06)] flex items-center justify-center"
+                        href="#contact"
+                        className="w-full sm:w-auto text-[var(--text-primary)] no-underline px-10 py-4 rounded-full text-[1rem] font-semibold border-2 border-[rgba(26,140,140,0.3)] hover:border-[var(--accent)] hover:text-[var(--accent)] bg-transparent flex items-center justify-center transition-all duration-300"
                     >
-                        Call Now For Assistance
+                        Book a Demo
                     </a>
+                </div>
+
+                {/* App Screenshot */}
+                <div className={clsx(
+                    "mt-20 md:mt-24 relative max-w-[1000px] mx-auto transition-all duration-1000 delay-1000 ease-[cubic-bezier(0.22,1,0.36,1)]",
+                    visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[50px]"
+                )}>
+                    <div className="absolute inset-0 bg-gradient-to-b from-[var(--accent)] to-transparent opacity-20 blur-[100px] rounded-[40px] pointer-events-none"></div>
+                    <video 
+                        src={productVideo} 
+                        autoPlay 
+                        loop 
+                        muted 
+                        playsInline 
+                        controls
+                        className="relative z-10 w-full aspect-auto rounded-[24px] border border-[var(--card-border)] shadow-[0_20px_80px_rgba(0,0,0,0.6)] object-cover bg-[rgba(26,140,140,0.05)]" 
+                    />
                 </div>
 
 
@@ -419,20 +449,31 @@ const featureData = [
     },
 ];
 
-const FeatureCard = ({ icon, title, desc, tag, delay }: typeof featureData[0] & { delay: number }) => {
+const FeatureCard = ({ icon, title, desc, tag, delay, index }: typeof featureData[0] & { delay: number, index: number }) => {
+    const spanClass = [
+        "md:col-span-2 lg:col-span-2",
+        "md:col-span-1 lg:col-span-1",
+        "md:col-span-1 lg:col-span-1",
+        "md:col-span-2 lg:col-span-2",
+        "md:col-span-1 lg:col-span-2",
+        "md:col-span-1 lg:col-span-1",
+    ][index] || "";
+
+    const isLarge = index === 0 || index === 3 || index === 4;
+
     return (
-        <div className="reveal group" style={{ transitionDelay: `${delay}ms` }}>
-            <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-[20px] p-[30px_36px] backdrop-blur-md transition-all duration-400 h-full flex flex-col group-hover:-translate-y-1 group-hover:bg-[rgba(37,99,235,0.04)] group-hover:border-[var(--accent-glow-strong)] group-hover:shadow-[0_12px_40px_rgba(37,99,235,0.08)]">
-                <span className="inline-block self-start bg-[rgba(74,144,217,0.1)] text-[var(--accent-bright)] text-[0.68rem] font-semibold tracking-[1.2px] uppercase px-3 py-1 rounded-[20px] mb-[22px]">
+        <div className={clsx("reveal group", spanClass)} style={{ transitionDelay: `${delay}ms` }}>
+            <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-[20px] p-[30px_36px] backdrop-blur-md transition-all duration-400 h-full flex flex-col group-hover:-translate-y-1 group-hover:bg-[rgba(26,140,140,0.04)] group-hover:border-[var(--accent-glow-strong)] group-hover:shadow-[0_12px_40px_rgba(26,140,140,0.08)]">
+                <span className="inline-block self-start bg-[var(--accent)] text-white text-[0.75rem] font-bold tracking-[1.2px] uppercase px-3.5 py-1.5 rounded-[20px] mb-6 shadow-sm">
                     {tag}
                 </span>
-                <div className="text-[var(--accent)] mb-5 transition-colors duration-300 group-hover:text-[var(--accent-bright)]">
+                <div className="w-14 h-14 rounded-2xl bg-[rgba(26,140,140,0.15)] border border-[rgba(26,140,140,0.2)] flex items-center justify-center text-[var(--accent)] mb-6 transition-all duration-300 group-hover:scale-110 group-hover:bg-[var(--accent)] group-hover:text-white group-hover:border-[var(--accent)]">
                     {icon}
                 </div>
-                <h3 className="font-['Syne',sans-serif] font-bold text-[1.2rem] mb-3 text-[var(--text-primary)]">
+                <h3 className={clsx("font-['Syne',sans-serif] font-bold mb-3 text-[var(--text-primary)]", isLarge ? "text-[1.5rem]" : "text-[1.2rem]")}>
                     {title}
                 </h3>
-                <p className="text-[var(--text-secondary)] text-[0.87rem] leading-[1.7] flex-1">
+                <p className="text-[var(--text-secondary)] text-[0.95rem] leading-[1.7] flex-1">
                     {desc}
                 </p>
                 <div className="mt-6 h-0.5 rounded-full bg-transparent transition-colors duration-400 group-hover:bg-gradient-to-r group-hover:from-[var(--accent)] group-hover:to-transparent" />
@@ -442,10 +483,10 @@ const FeatureCard = ({ icon, title, desc, tag, delay }: typeof featureData[0] & 
 };
 
 const Features = () => (
-    <section id="features" className="relative z-10 py-[60px] md:py-[120px] px-6">
+    <section id="features" className="relative z-10 py-20 md:py-28 px-6">
         <div className="max-w-[1200px] mx-auto">
             <div className="reveal text-center mb-[72px]">
-                <span className="inline-block bg-[rgba(74,144,217,0.08)] border border-[rgba(74,144,217,0.2)] text-[var(--accent-bright)] text-[0.7rem] font-semibold tracking-[1.8px] uppercase px-[18px] py-[6px] rounded-[20px] mb-6">
+                <span className="inline-block bg-[rgba(26,140,140,0.08)] border border-[rgba(26,140,140,0.2)] text-[var(--accent-bright)] text-[0.7rem] font-semibold tracking-[1.8px] uppercase px-[18px] py-[6px] rounded-[20px] mb-6">
                     Capabilities
                 </span>
                 <h2 className="font-['Syne',sans-serif] font-extrabold text-[clamp(2.2rem,4.5vw,3.2rem)] text-[var(--text-primary)] leading-[1.15]">
@@ -459,83 +500,178 @@ const Features = () => (
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[22px]">
-                {featureData.map((f, i) => <FeatureCard key={i} {...f} delay={i * 100} />)}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {featureData.map((f, i) => <FeatureCard key={i} {...f} delay={i * 100} index={i} />)}
             </div>
         </div>
     </section>
 );
 
 const About = () => (
-    <section id="about" className="relative z-10 py-[60px] md:py-[120px] px-6">
-        <div className="max-w-[1100px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
-            {/* Left: Visual */}
-            <div className="reveal-left relative">
-                <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-[28px] p-10 backdrop-blur-md relative overflow-hidden">
-                    <div className="absolute top-[-60px] right-[-60px] w-[200px] h-[200px] rounded-full bg-[radial-gradient(circle,rgba(74,144,217,0.15)_0%,transparent_70%)] pointer-events-none" />
+    <section id="about" className="relative z-10 py-20 md:py-28 px-6">
+        <div className="max-w-[1000px] mx-auto">
+            <div className="reveal text-center mb-[60px]">
+                <span className="inline-block bg-[rgba(26,140,140,0.08)] border border-[rgba(26,140,140,0.2)] text-[var(--accent-bright)] text-[0.7rem] font-semibold tracking-[1.8px] uppercase px-[18px] py-[6px] rounded-[20px] mb-6">
+                    About Us
+                </span>
+                <h2 className="font-['Syne',sans-serif] font-extrabold text-[clamp(2.2rem,4.5vw,3.2rem)] text-[var(--text-primary)] leading-[1.15]">
+                    MediX <span className="bg-gradient-to-br from-[var(--accent-bright)] to-[var(--accent)] bg-clip-text text-transparent">The Story</span>
+                </h2>
+            </div>
+            
+            <div className="reveal grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-start">
+                <div className="text-[var(--text-secondary)] text-[1rem] leading-[1.8] font-normal">
+                    <p className="mb-6">
+                        The idea came to me in December 2025. A close friend of mine was working at a pharmacy store, and one day he reached out knowing I was a software developer. The store was struggling — managing stock levels and tracking medicine expiry dates had become a serious challenge.
+                    </p>
+                    <p>
+                        Everything was recorded on paper, and keeping up with it all had turned into a nightmare. That's when it clicked for me. I decided to build something that could genuinely help them run their store more efficiently and effectively. That's how MediX was born.
+                    </p>
+                </div>
+                
+                <div className="text-[var(--text-secondary)] text-[1rem] leading-[1.8] font-normal">
+                    <blockquote className="border-l-4 border-[var(--accent)] pl-6 mb-8 text-[1.1rem] italic font-medium text-[var(--text-primary)]">
+                        "My vision is to create a solution that not only simplifies pharmacy management but empowers store owners to focus on what they do best."
+                    </blockquote>
+                    <p>
+                        The goal at first was to just make an app for the store, but later it grew in my mind to start it as a startup. I'm now alone as a team of one, but I'm deeply committed to making MediX the best it can be. I believe that with the right tools, even small pharmacies can thrive in today's competitive landscape.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+);
 
-                    <div className="flex flex-col gap-[18px] relative z-10">
-                        {[
-                            { label: "Today's Prescriptions", value: "1,284", trend: "+12%", color: "#4caf50" },
-                            { label: "Revenue Today", value: "$48,920", trend: "+8.3%", color: "#4caf50" },
-                            { label: "Inventory Alerts", value: "3", trend: "↓ 2", color: "#4a90d9" },
-                            { label: "Avg. Transaction Time", value: "2.4s", trend: "-0.8s", color: "#4caf50" },
-                        ].map((s, i) => (
-                            <div key={i} className="flex justify-between items-center bg-[var(--navy-mid)] rounded-[14px] p-[16px_20px] border border-[rgba(37,99,235,0.1)]">
-                                <div>
-                                    <div className="text-[0.72rem] text-[var(--text-muted)] uppercase tracking-[1px] mb-1">{s.label}</div>
-                                    <div className="font-['Syne',sans-serif] font-bold text-[1.3rem] text-[var(--text-primary)]">{s.value}</div>
-                                </div>
-                                <span className={clsx(
-                                    "text-[0.72rem] font-semibold px-2.5 py-1 rounded-[20px]",
-                                    s.color === "#4caf50" ? "bg-[#4caf50]/10 text-[#4caf50]" : "bg-[rgba(37,99,235,0.1)] text-[var(--accent)]"
-                                )}>
-                                    {s.trend}
-                                </span>
-                            </div>
-                        ))}
+const Pricing = () => (
+    <section id="pricing" className="relative z-10 py-20 md:py-28 px-6">
+        <div className="max-w-[1200px] mx-auto">
+            <div className="reveal text-center mb-[72px]">
+                <span className="inline-block bg-[rgba(26,140,140,0.08)] border border-[rgba(26,140,140,0.2)] text-[var(--accent-bright)] text-[0.7rem] font-semibold tracking-[1.8px] uppercase px-[18px] py-[6px] rounded-[20px] mb-6">
+                    Pricing
+                </span>
+                <h2 className="font-['Syne',sans-serif] font-extrabold text-[clamp(2.2rem,4.5vw,3.2rem)] text-[var(--text-primary)] leading-[1.15]">
+                    Simple, transparent pricing
+                </h2>
+                <p className="mt-6 text-[var(--text-secondary)] text-[1.1rem] max-w-[600px] mx-auto leading-[1.7]">
+                    Choose the plan that fits your pharmacy needs. No subscriptions, no hidden charges.
+                </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 relative z-10 max-w-[900px] mx-auto">
+                {/* Plan 1 */}
+                <div className="reveal-left bg-[var(--card-bg)] border border-[var(--card-border)] rounded-[24px] backdrop-blur-md transition-all duration-300 hover:shadow-[0_12px_40px_rgba(26,140,140,0.12)] hover:-translate-y-1 flex flex-col">
+                    <div className="bg-[var(--text-primary)] p-8 text-center relative rounded-t-[22px]">
+                        <div className="w-16 h-16 mx-auto bg-white rounded-full flex items-center justify-center shadow-md mb-4 text-[var(--accent)] border-4 border-[var(--navy-mid)]">
+                            <Icons.Pharmacy />
+                        </div>
+                        <h3 className="text-white font-['Syne',sans-serif] font-bold text-2xl">Medix Software</h3>
                     </div>
-                    {/* Bottom progress bar */}
-                    <div className="mt-6">
-                        <div className="flex justify-between mb-2">
-                            <span className="text-[0.72rem] text-[var(--text-muted)]">Inventory Health</span>
-                            <span className="text-[0.72rem] text-[#4caf50] font-semibold">94%</span>
+                    <div className="p-8 flex-grow flex flex-col items-center bg-white/50 rounded-b-[22px]">
+                        <p className="text-[0.75rem] font-bold tracking-[2px] text-[var(--text-muted)] uppercase mb-3 text-center">One-Time Payment</p>
+                        <div className="font-['Syne',sans-serif] font-bold text-5xl text-[var(--text-primary)] mb-8 flex items-baseline justify-center gap-1">
+                            <span className="text-3xl text-[var(--text-muted)]">₹</span>13,500
                         </div>
-                        <div className="h-1.5 bg-[rgba(74,144,217,0.12)] rounded-full">
-                            <div className="h-full w-[94%] rounded-full bg-gradient-to-r from-[#4a90d9] to-[#4caf50]" />
+                        
+                        <div className="w-full h-px bg-[rgba(26,140,140,0.2)] mb-8"></div>
+                        
+                        <ul className="w-full flex-grow flex flex-col gap-5 text-left mb-8">
+                            {["Barcode billing & invoicing", "Receipt printer support", "Inventory management", "Expiry & stock alerts", "Sales analytics dashboard", "Customer history & loyalty", "1 year free support"].map((feature, i) => (
+                                <li key={i} className="flex items-start gap-3">
+                                    <div className="w-5 h-5 rounded-full bg-[rgba(26,140,140,0.15)] flex items-center justify-center text-[var(--accent)] shrink-0 mt-[2px]">
+                                        <Icons.Check />
+                                    </div>
+                                    <span className="text-[var(--text-primary)] font-medium text-[1.05rem]">{feature}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </div>
+
+                {/* Plan 2 */}
+                <div className="reveal-right bg-[var(--card-bg)] border-[2px] border-[var(--accent)] rounded-[24px] backdrop-blur-md transition-all duration-300 hover:shadow-[0_12px_50px_rgba(26,140,140,0.25)] hover:-translate-y-2 flex flex-col relative shadow-[0_8px_30px_rgba(26,140,140,0.15)] md:scale-105 z-20">
+                    <div className="absolute top-0 right-8 -translate-y-1/2 bg-[var(--accent)] text-white font-bold px-5 py-2 rounded-full uppercase tracking-wider text-xs shadow-[0_4px_15px_rgba(26,140,140,0.4)] border-[3px] border-[var(--card-bg)] z-30">
+                        Best Value
+                    </div>
+                    
+                    <div className="bg-[var(--text-primary)] p-8 text-center relative rounded-t-[22px]">
+                        <div className="w-16 h-16 mx-auto bg-white rounded-full flex items-center justify-center shadow-md mb-4 text-[var(--accent)] border-4 border-[var(--navy-mid)]">
+                            <Icons.Database />
                         </div>
+                        <h3 className="text-white font-['Syne',sans-serif] font-bold text-2xl">Medix Full Setup</h3>
+                    </div>
+                    <div className="p-8 flex-grow flex flex-col items-center bg-gradient-to-b from-white/50 to-[rgba(26,140,140,0.05)] rounded-b-[22px]">
+                        <p className="text-[0.75rem] font-bold tracking-[2px] text-[var(--text-muted)] uppercase mb-3 text-center">One-Time Payment</p>
+                        <div className="font-['Syne',sans-serif] font-bold text-5xl text-[var(--text-primary)] mb-8 flex items-baseline justify-center gap-1">
+                            <span className="text-3xl text-[var(--text-muted)]">₹</span>28,000
+                        </div>
+                        
+                        <div className="w-full text-center mb-6">
+                            <span className="text-[var(--accent)] font-semibold text-[0.95rem]">Everything in Medix Software</span>
+                            <div className="flex items-center justify-center gap-4 my-2">
+                                <div className="h-px w-12 bg-[rgba(26,140,140,0.3)]"></div>
+                                <span className="text-[0.7rem] uppercase tracking-widest text-[var(--text-muted)] font-bold">Plus</span>
+                                <div className="h-px w-12 bg-[rgba(26,140,140,0.3)]"></div>
+                            </div>
+                        </div>
+                        
+                        <ul className="w-full flex-grow flex flex-col gap-5 text-left mb-8">
+                            {[
+                                { text: "10-inch tablet", sub: "(pre-installed)" },
+                                { text: "Barcode receipt printer" },
+                                { text: "Barcode label printer" },
+                                { text: "Barcode scanner" },
+                                { text: "Ready to bill from day one" }
+                            ].map((feature, i) => (
+                                <li key={i} className="flex items-start gap-3">
+                                    <div className="w-5 h-5 rounded-full bg-[var(--accent)] flex items-center justify-center text-white shrink-0 mt-[2px] shadow-sm">
+                                        <Icons.Check />
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <span className="text-[var(--text-primary)] font-semibold text-[1.05rem]">{feature.text}</span>
+                                        {feature.sub && <span className="text-[var(--text-muted)] text-[0.85rem] italic">{feature.sub}</span>}
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
                     </div>
                 </div>
             </div>
 
-            {/* Right: Text */}
-            <div className="reveal-right">
-                <span className="inline-block bg-[rgba(74,144,217,0.08)] border border-[rgba(74,144,217,0.2)] text-[var(--accent-bright)] text-[0.7rem] font-semibold tracking-[1.8px] uppercase px-[18px] py-[6px] rounded-[20px] mb-6">
-                    About Us
-                </span>
-                <h2 className="font-['Syne',sans-serif] font-extrabold text-[clamp(2rem,3.8vw,2.8rem)] text-[var(--text-primary)] leading-[1.2] mb-6">
-                    Redefining pharmacy operations<br />
-                    <span className="bg-gradient-to-br from-[var(--accent-bright)] via-[var(--accent)] to-[var(--accent)] bg-clip-text text-transparent drop-shadow-[0_0_40px_rgba(37,99,235,0.2)]">
-                        from the ground up
-                    </span>
-                </h2>
-                <p className="text-[var(--text-secondary)] text-[0.95rem] leading-[1.85] mb-5">
-                    Founded in 2026, MediX was born from a simple frustration: pharmacy management software hadn't meaningfully evolved in over a decade. We set out to change that.
-                </p>
-                <p className="text-[var(--text-secondary)] text-[0.95rem] leading-[1.85] mb-9">
-                    Our team of healthcare technologists and former pharmacy operators built a platform that speaks the language of pharmacies — combining cutting-edge cloud infrastructure with an intuitive interface that reduces training time by 80%.
-                </p>
-                {/* Checklist */}
-                {["FDA & DEA compliant by default", "99.97% uptime SLA with real-time monitoring", "24/7 dedicated pharmacy support", "Enterprise-grade security (SOC 2, HIPAA)"].map((item, i) => (
-                    <div key={i} className="flex items-start gap-3 mb-3.5">
-                        <div className="w-6 h-6 rounded-full min-w-[24px] bg-[rgba(74,144,217,0.12)] border border-[rgba(74,144,217,0.25)] flex items-center justify-center text-[var(--accent-bright)] mt-[1px]">
-                            <Icons.Check />
-                        </div>
-                        <span className="text-[var(--text-secondary)] text-[0.88rem] leading-[1.6]">
-                            {item}
-                        </span>
+            {/* Bottom Banner */}
+            <div className="reveal mt-16 max-w-[900px] mx-auto bg-[var(--text-primary)] rounded-[20px] p-8 md:p-10 shadow-xl relative overflow-hidden border border-[rgba(26,140,140,0.2)]">
+                <div className="absolute top-[-100px] right-[-100px] w-[300px] h-[300px] rounded-full bg-[radial-gradient(circle,rgba(26,140,140,0.15)_0%,transparent_70%)] pointer-events-none" />
+                <div className="absolute bottom-[-100px] left-[-100px] w-[200px] h-[200px] rounded-full bg-[radial-gradient(circle,rgba(26,140,140,0.1)_0%,transparent_70%)] pointer-events-none" />
+                
+                <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
+                    <div className="w-20 h-20 rounded-[20px] bg-[rgba(26,140,140,0.15)] flex items-center justify-center shrink-0 border border-[rgba(26,140,140,0.3)] text-[var(--accent-bright)]">
+                        <Icons.Shield />
                     </div>
-                ))}
+                    <div>
+                        <h3 className="text-white font-['Syne',sans-serif] font-bold text-[clamp(1.5rem,3vw,2.5rem)] mb-2 leading-[1.3]">
+                            One-time payment.<br />
+                            No subscription.<br />
+                            <span className="inline-block bg-[var(--accent)] text-white px-5 py-1.5 mt-3 rounded-[10px] transform -rotate-1 shadow-lg tracking-wide">No hidden charges.</span>
+                        </h3>
+                    </div>
+                </div>
+
+                <div className="w-full h-px bg-[rgba(255,255,255,0.1)] my-8"></div>
+                
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center relative z-10">
+                    {[
+                        { icon: <Icons.Shield />, label: "Secure" },
+                        { icon: <Icons.Database />, label: "Reliable" },
+                        { icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"></path><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path></svg>, label: "Dedicated Support" },
+                        { icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>, label: "Designed for Pharmacies" }
+                    ].map((item, i) => (
+                        <div key={i} className="flex flex-col items-center gap-4">
+                            <div className="w-14 h-14 bg-[rgba(255,255,255,0.08)] border border-[rgba(255,255,255,0.1)] rounded-2xl flex items-center justify-center text-[var(--accent-bright)] hover:bg-[var(--accent)] hover:text-white hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(26,140,140,0.3)] transition-all duration-300">
+                                {item.icon}
+                            </div>
+                            <span className="text-[rgba(255,255,255,0.95)] text-[0.95rem] font-semibold tracking-wide">{item.label}</span>
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     </section>
@@ -544,178 +680,121 @@ const About = () => (
 const Contact = () => {
     const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
     const [sent, setSent] = useState(false);
-    const [focused, setFocused] = useState<string | null>(null);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
     return (
-        <section id="contact" className="relative z-10 py-[60px] md:py-[120px] px-6">
-            <div className="max-w-[1100px] mx-auto grid grid-cols-1 md:grid-cols-[1fr_1.2fr] gap-20 items-start">
-                <div className="reveal-left">
-                    <span className="inline-block bg-[rgba(74,144,217,0.08)] border border-[rgba(74,144,217,0.2)] text-[var(--accent-bright)] text-[0.7rem] font-semibold tracking-[1.8px] uppercase px-[18px] py-[6px] rounded-[20px] mb-6">
+        <section id="contact" className="relative z-10 py-20 md:py-28 px-6">
+            <div className="max-w-[1200px] mx-auto bg-[var(--card-bg)] border border-[rgba(26,140,140,0.15)] rounded-[40px] p-8 md:p-16 grid grid-cols-1 md:grid-cols-[1fr_1.2fr] gap-12 md:gap-20 items-start relative overflow-hidden shadow-2xl">
+                <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[var(--accent)] to-[var(--accent-bright)] z-20"></div>
+                <div className="absolute top-[-200px] left-[-100px] w-[500px] h-[500px] rounded-full bg-[radial-gradient(circle,rgba(26,140,140,0.05)_0%,transparent_70%)] pointer-events-none" />
+                
+                <div className="reveal-left relative z-10">
+                    <span className="inline-block bg-[rgba(26,140,140,0.1)] text-[var(--accent-bright)] text-[0.7rem] font-bold tracking-[1.8px] uppercase px-[18px] py-[6px] rounded-[20px] mb-6">
                         Contact
                     </span>
                     <h2 className="font-['Syne',sans-serif] font-extrabold text-[clamp(2rem,3.8vw,2.8rem)] text-[var(--text-primary)] leading-[1.2] mb-4">
                         Ready to transform<br />
-                        <span className="bg-gradient-to-br from-[var(--accent-bright)] via-[var(--accent)] to-[var(--accent)] bg-clip-text text-transparent drop-shadow-[0_0_40px_rgba(37,99,235,0.2)]">
+                        <span className="bg-gradient-to-br from-[var(--accent-bright)] via-[var(--accent)] to-[var(--accent)] bg-clip-text text-transparent drop-shadow-[0_0_40px_rgba(26,140,140,0.2)]">
                             your shop?
                         </span>
                     </h2>
-                    <p className="text-[var(--text-secondary)] text-[0.95rem] leading-[1.8] mb-10">
+                    <p className="text-[var(--text-secondary)] text-[1rem] leading-[1.8] mb-10 max-w-[400px]">
                         Get in touch with our team to schedule a personalized demo or discuss how MediX fits your workflow.
                     </p>
 
                     {[
-                        {
-                            icon: <Icons.Mail />,
-                            label: "Email",
-                            value: (
-                                <a
-                                    href="mailto:techcodex.hub@gmail.com"
-                                    className="text-inherit no-underline hover:underline"
-                                >
-                                    techcodex.hub@gmail.com
-                                </a>
-                            )
-                        }
-                        ,
-                        {
-                            icon: <Icons.Phone />,
-                            label: "Phone",
-                            value: (
-                                <a
-                                    href="tel:+918101402916"
-                                    className="text-inherit no-underline hover:underline"
-                                >
-                                    +91 8101402916
-                                </a>
-                            )
-                        }
-                        ,
+                        { icon: <Icons.Mail />, label: "Email", value: <a href="mailto:medix.pos@gmail.com" className="text-inherit no-underline hover:text-[var(--accent-bright)] transition-colors">medix.pos@gmail.com</a> },
+                        { icon: <Icons.Phone />, label: "Phone", value: <a href="tel:+918101402916" className="text-inherit no-underline hover:text-[var(--accent-bright)] transition-colors">+91 8101402916</a> },
                         { icon: <Icons.Location />, label: "Office", value: "Nawabpur, Hooghly, West Bengal, India" },
                     ].map((c, i) => (
-                        <div key={i} className="flex items-center gap-4 mb-6">
-                            <div className="w-11 h-11 rounded-[14px] bg-[rgba(74,144,217,0.08)] border border-[rgba(74,144,217,0.15)] flex items-center justify-center text-[var(--accent-bright)]">
+                        <div key={i} className="flex items-center gap-5 mb-6 group">
+                            <div className="w-12 h-12 rounded-xl bg-[rgba(26,140,140,0.1)] border border-[rgba(26,140,140,0.2)] flex items-center justify-center text-[var(--accent-bright)] group-hover:bg-[var(--accent)] group-hover:text-white transition-all duration-300">
                                 {c.icon}
                             </div>
                             <div>
-                                <div className="text-[0.7rem] text-[var(--text-muted)] uppercase tracking-[1px] mb-0.5">{c.label}</div>
-                                <div className="text-[var(--text-secondary)] text-[0.9rem] font-medium">{c.value}</div>
+                                <div className="text-[0.75rem] text-[var(--text-muted)] uppercase tracking-[1px] mb-0.5">{c.label}</div>
+                                <div className="text-[var(--text-primary)] text-[0.95rem] font-medium">{c.value}</div>
                             </div>
                         </div>
                     ))}
                 </div>
 
-                <div className="reveal-right">
-                    <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl p-[40px_36px] backdrop-blur-md">
+                <div className="reveal-right relative z-10">
+                    <div className="w-full">
                         {!sent ? (
                             <>
-                                <h3 className="font-['Syne',sans-serif] font-bold text-[1.3rem] mb-2">Start your free trial</h3>
-                                <p className="text-[var(--text-muted)] text-[0.82rem] mb-[30px]">No credit card required. Set up in minutes.</p>
+                                <h3 className="font-['Syne',sans-serif] font-bold text-[1.4rem] mb-2 text-[var(--text-primary)]">Book A Free Software Demo</h3>
+                                <p className="text-[var(--text-secondary)] text-[0.9rem] mb-[32px]">Fill out the form below and we'll get back to you shortly.</p>
 
-                                <div className="grid grid-cols-2 gap-4 mb-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
                                     {[
                                         { label: "Full Name", name: "name", placeholder: "Jane Smith" },
-                                        { label: "Phone", name: "phone", placeholder: "+1 (555) 000-0000" }
+                                        { label: "Phone", name: "phone", placeholder: "+91 9876543210" }
                                     ].map((f) => (
                                         <div key={f.name}>
-                                            <label className="text-[0.72rem] text-[var(--text-muted)] uppercase tracking-[1px] mb-1.5 block">{f.label}</label>
+                                            <label className="text-[0.75rem] text-[var(--text-muted)] font-bold uppercase tracking-[1px] mb-2 block">{f.label}</label>
                                             <input
                                                 name={f.name}
                                                 value={form[f.name as keyof typeof form]}
                                                 onChange={handleChange}
-                                                onFocus={() => setFocused(f.name)}
-                                                onBlur={() => setFocused(null)}
                                                 placeholder={f.placeholder}
-                                                className={clsx(
-                                                    "w-full bg-[var(--navy-mid)] border rounded-[14px] p-[14px_18px] text-[var(--text-primary)] text-[0.9rem] font-sans outline-none transition-all duration-300",
-                                                    focused === f.name ? "border-[rgba(37,99,235,0.5)] ring-[3px] ring-[rgba(37,99,235,0.12)]" : "border-[rgba(37,99,235,0.15)]"
-                                                )}
+                                                className="w-full bg-[rgba(255,255,255,0.5)] border border-[rgba(26,140,140,0.2)] rounded-[12px] p-[14px_16px] text-[var(--text-primary)] text-[0.95rem] font-sans outline-none transition-all duration-300 focus:border-[var(--accent)] focus:ring-[4px] focus:ring-[rgba(26,140,140,0.15)] focus:bg-white placeholder-[var(--text-muted)]"
                                             />
                                         </div>
                                     ))}
                                 </div>
 
-                                <div className="mb-4">
-                                    <label className="text-[0.72rem] text-[var(--text-muted)] uppercase tracking-[1px] mb-1.5 block">Email Address</label>
+                                <div className="mb-5">
+                                    <label className="text-[0.75rem] text-[var(--text-muted)] font-bold uppercase tracking-[1px] mb-2 block">Email Address</label>
                                     <input
                                         name="email"
                                         type="email"
                                         value={form.email}
                                         onChange={handleChange}
-                                        onFocus={() => setFocused("email")}
-                                        onBlur={() => setFocused(null)}
                                         placeholder="jane@pharmacare.com"
-                                        className={clsx(
-                                            "w-full bg-[var(--navy-mid)] border rounded-[14px] p-[14px_18px] text-[var(--text-primary)] text-[0.9rem] font-sans outline-none transition-all duration-300",
-                                            focused === "email" ? "border-[rgba(37,99,235,0.5)] ring-[3px] ring-[rgba(37,99,235,0.12)]" : "border-[rgba(37,99,235,0.15)]"
-                                        )}
+                                        className="w-full bg-[rgba(255,255,255,0.5)] border border-[rgba(26,140,140,0.2)] rounded-[12px] p-[14px_16px] text-[var(--text-primary)] text-[0.95rem] font-sans outline-none transition-all duration-300 focus:border-[var(--accent)] focus:ring-[4px] focus:ring-[rgba(26,140,140,0.15)] focus:bg-white placeholder-[var(--text-muted)]"
                                     />
                                 </div>
 
-                                <div className="mb-7">
-                                    <label className="text-[0.72rem] text-[var(--text-muted)] uppercase tracking-[1px] mb-1.5 block">Message</label>
+                                <div className="mb-8">
+                                    <label className="text-[0.75rem] text-[var(--text-muted)] font-bold uppercase tracking-[1px] mb-2 block">Message</label>
                                     <textarea
                                         name="message"
                                         value={form.message}
                                         onChange={handleChange}
-                                        onFocus={() => setFocused("message")}
-                                        onBlur={() => setFocused(null)}
                                         placeholder="Tell us about your pharmacy..."
                                         rows={4}
-                                        className={clsx(
-                                            "w-full bg-[var(--navy-mid)] border rounded-[14px] p-[14px_18px] text-[var(--text-primary)] text-[0.9rem] font-sans outline-none transition-all duration-300 resize-none",
-                                            focused === "message" ? "border-[rgba(37,99,235,0.5)] ring-[3px] ring-[rgba(37,99,235,0.12)]" : "border-[rgba(37,99,235,0.15)]"
-                                        )}
+                                        className="w-full bg-[rgba(255,255,255,0.5)] border border-[rgba(26,140,140,0.2)] rounded-[12px] p-[14px_16px] text-[var(--text-primary)] text-[0.95rem] font-sans outline-none transition-all duration-300 resize-none focus:border-[var(--accent)] focus:ring-[4px] focus:ring-[rgba(26,140,140,0.15)] focus:bg-white placeholder-[var(--text-muted)]"
                                     />
                                 </div>
-
 
                                 <button
                                     onClick={async () => {
                                         if (!form.name || !form.email) return;
-
-                                        // Backend API call
                                         try {
                                             const res = await fetch('https://medix-bend.vercel.app/api/v1/contact', {
                                                 method: 'POST',
-                                                headers: {
-                                                    'Content-Type': 'application/json',
-                                                },
+                                                headers: { 'Content-Type': 'application/json' },
                                                 body: JSON.stringify(form),
                                             });
-
-                                            if (res.ok) {
-                                                setSent(true);
-                                            } else {
-                                                alert("Failed to send message. Please try again.");
-                                            }
+                                            if (res.ok) setSent(true);
+                                            else alert("Failed to send message. Please try again.");
                                         } catch (error) {
                                             console.error("Error sending message:", error);
                                             alert("An error occurred. Please try again later.");
                                         }
                                     }}
-                                    className="w-full
-bg-gradient-to-br from-[var(--accent)] to-[#2c6aad]
-text-white no-underline
-px-9 py-3.5
-rounded-full
-text-[0.92rem] font-semibold tracking-[0.3px]
-shadow-[0_6px_30px_rgba(74,144,217,0.35)]
-flex items-center justify-center gap-2
-transition-all duration-250
-hover:-translate-y-0.5
-hover:shadow-[0_10px_40px_rgba(74,144,217,0.5)]
-text-center"
+                                    className="w-full bg-[var(--accent)] text-white no-underline px-6 py-[16px] rounded-[12px] text-[1rem] font-bold tracking-[0.5px] shadow-[0_4px_20px_rgba(26,140,140,0.4)] flex items-center justify-center transition-all duration-300 hover:shadow-[0_8px_30px_rgba(26,140,140,0.6)] hover:-translate-y-1"
                                 >
                                     Submit & Get Started →
                                 </button>
 
 
-                                <p className="text-center text-[var(--text-muted)] text-[0.72rem] mt-[18px]">
-                                    By submitting, you agree to our <a href="#" className="text-[var(--accent)] no-underline">Privacy Policy</a> & <a href="#" className="text-[var(--accent)] no-underline">Terms of Service</a>
+                                <p className="text-[var(--text-muted)] text-[0.72rem] leading-[1.6]">
+                                    By submitting, you agree to our <Link to="/privacy" className="text-[var(--accent)] no-underline hover:text-[var(--accent-bright)] transition-colors">Privacy Policy</Link> & <Link to="/terms" className="text-[var(--accent)] no-underline hover:text-[var(--accent-bright)] transition-colors">Terms of Service</Link>
                                 </p>
                             </>
                         ) : (
@@ -729,7 +808,7 @@ text-center"
                                 </p>
                                 <button
                                     onClick={() => { setSent(false); setForm({ name: "", email: "", phone: "", message: "" }); }}
-                                    className="mt-6 bg-transparent border border-[rgba(74,144,217,0.3)] text-[var(--accent-bright)] px-6 py-2.5 rounded-full text-[0.85rem] cursor-pointer font-medium hover:bg-[rgba(74,144,217,0.05)] transition-colors"
+                                    className="mt-6 bg-transparent border border-[rgba(26,140,140,0.3)] text-[var(--accent-bright)] px-6 py-2.5 rounded-full text-[0.85rem] cursor-pointer font-medium hover:bg-[rgba(26,140,140,0.05)] transition-colors"
                                 >
                                     Send another →
                                 </button>
@@ -743,76 +822,24 @@ text-center"
 };
 
 const Footer = () => (
-    <footer className="relative z-10 border-t border-[rgba(74,144,217,0.1)] pt-[72px] pb-9 px-6">
-        <div className="max-w-[1100px] mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr] gap-12 mb-[60px]">
-                {/* Brand */}
-                <div>
-                    <div className="flex items-center gap-2.5 mb-[18px]">
-                        <div className="relative flex items-center justify-center w-8 h-8 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg shadow-md">
-                            <div className="absolute inset-0 bg-white/10 rounded-lg" />
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-4 h-4 text-white z-10">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                            </svg>
-                            <div className="absolute -top-1 -right-1 w-2 h-2 bg-cyan-400 rounded-full border-2 border-[var(--navy)] shadow-sm z-20"></div>
-                        </div>
-                        <span className="font-['Syne',sans-serif] font-extrabold text-[1.1rem] tracking-tight">
-                            Medi<span className="text-[var(--accent-bright)]">X</span>
-                        </span>
-                    </div>
-                    <p className="text-[var(--text-muted)] text-[0.84rem] leading-[1.75] max-w-[280px]">
-                        The next-generation pharmacy management platform. Streamlining operations for pharmacies of every size since 2026.
-                    </p>
-                    <div className="flex gap-3 mt-[22px]">
-                        {["in", "tw", "gh"].map((s) => (
-                            <a
-                                key={s}
-                                href="#"
-                                className="w-[38px] h-[38px] rounded-[10px] bg-[rgba(74,144,217,0.08)] border border-[rgba(74,144,217,0.15)] flex items-center justify-center text-[var(--text-muted)] no-underline text-[0.72rem] font-bold uppercase tracking-[0.5px] transition-all duration-300 hover:border-[rgba(74,144,217,0.4)] hover:text-[var(--accent-bright)]"
-                            >
-                                {s}
-                            </a>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Link Columns */}
+    <footer className="relative z-10 py-9 px-6">
+        <div className="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center gap-5 border-t border-[rgba(26,140,140,0.1)] pt-7">
+            <p className="text-[var(--text-muted)] text-[0.78rem] text-center md:text-left">© 2026 MediX Technologies. All rights reserved.</p>
+            <div className="flex flex-wrap justify-center gap-4 md:gap-6">
                 {[
-                    { title: "Product", links: ["Features", "Pricing", "Integrations", "Security", "Changelog"] },
-                    { title: "Company", links: ["About", "Careers", "Blog", "Press", "Partners"] },
-                    { title: "Support", links: ["Documentation", "Help Center", "Status", "Contact Us", "Community"] },
-                ].map((col) => (
-                    <div key={col.title}>
-                        <h4 className="font-['Syne',sans-serif] font-bold text-[0.85rem] mb-5 text-[var(--text-primary)] uppercase tracking-[1px]">
-                            {col.title}
-                        </h4>
-                        {col.links.map((l) => (
-                            <a
-                                key={l}
-                                href="#"
-                                className="block text-[var(--text-muted)] no-underline text-[0.84rem] py-1.5 transition-colors duration-300 hover:text-[var(--accent-bright)]"
-                            >
-                                {l}
-                            </a>
-                        ))}
-                    </div>
+                    { label: "Privacy Policy", path: "/privacy" },
+                    { label: "Terms of Service", path: "/terms" },
+                    { label: "Cookie Policy", path: "/cookie" },
+                    { label: "Earn With Us", path: "/partner" }
+                ].map((l) => (
+                    <Link
+                        key={l.label}
+                        to={l.path}
+                        className="text-[var(--text-muted)] no-underline text-[0.78rem] transition-colors duration-300 hover:text-[var(--accent-bright)]"
+                    >
+                        {l.label}
+                    </Link>
                 ))}
-            </div>
-
-            {/* Bottom */}
-            <div className="border-t border-[rgba(74,144,217,0.08)] pt-7 flex justify-between items-center flex-wrap gap-3">
-                <p className="text-[var(--text-muted)] text-[0.78rem]">© 2026 MediX Technologies. All rights reserved.</p>
-                <div className="flex gap-6">
-                    {["Privacy Policy", "Terms of Service", "Cookie Policy"].map((l) => (
-                        <a
-                            key={l}
-                            href="#"
-                            className="text-[var(--text-muted)] no-underline text-[0.78rem] transition-colors duration-300 hover:text-[var(--accent-bright)]"
-                        >
-                            {l}
-                        </a>
-                    ))}
-                </div>
             </div>
         </div>
     </footer>
@@ -837,6 +864,7 @@ export default function PharmaSyncLanding() {
             {/* <StatsBar /> */}
             <Features />
             <About />
+            <Pricing />
             <Contact />
             <Footer />
         </div>

@@ -5,6 +5,7 @@ import path from 'path'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: './',
   plugins: [react(), tailwindcss()],
 
   resolve: {
@@ -34,7 +35,7 @@ export default defineConfig({
 
     proxy: {
       '/api': {
-        target: 'https://medix-bend.vercel.app',
+        target: 'http://localhost:5000',
         changeOrigin: true,
       },
     },

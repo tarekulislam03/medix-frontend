@@ -1,82 +1,21 @@
-import { Suspense, lazy } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from '@/context/AuthContext';
-import { TutorialProvider } from '@/context/TutorialContext';
-import ProtectedRoute from '@/components/common/ProtectedRoute';
-import DashboardLayout from '@/layouts/DashboardLayout';
-import TutorialOverlay from '@/components/tutorial/TutorialOverlay';
-
-// Lazy load pages
-const Dashboard = lazy(() => import('@/pages/Dashboard'));
-const Inventory = lazy(() => import('@/pages/Inventory'));
-const POS = lazy(() => import('@/pages/POS'));
-const Login = lazy(() => import('@/pages/Login'));
-const Register = lazy(() => import('@/pages/Register'));
-const ForgotPassword = lazy(() => import('@/pages/ForgotPassword'));
-const ResetPassword = lazy(() => import('@/pages/ResetPassword'));
-const VerifyEmail = lazy(() => import('@/pages/VerifyEmail'));
-const VerifyOTP = lazy(() => import('@/pages/VerifyOTP'));
-const Analytics = lazy(() => import('@/pages/Analytics'));
-const Customers = lazy(() => import('@/pages/Customers'));
-const Settings = lazy(() => import('@/pages/Settings'));
-const PaymentStatus = lazy(() => import('@/pages/PaymentStatus'));
-const Help = lazy(() => import('@/pages/Help'));
-
-// Marketing Pages
-// Marketing Pages
-const Home = lazy(() => import('@/pages/marketing/Home'));
-
-const LoadingFallback = () => (
-  <div className="flex h-screen w-full items-center justify-center bg-gray-50">
-    <div className="h-16 w-16 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600"></div>
-  </div>
-);
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Home from './pages/marketing/Home';
+import Terms from './pages/marketing/Terms';
+import Privacy from './pages/marketing/Privacy';
+import Cookie from './pages/marketing/Cookie';
+import Partner from './pages/marketing/Partner';
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <TutorialProvider>
-          <Suspense fallback={<LoadingFallback />}>
-            {/* Tutorial Overlay - renders on top of everything when active */}
-            <TutorialOverlay />
-
-            <Routes>
-              {/* Marketing Routes (Public & Indexable) */}
-              <Route path="/" element={<Home />} />
-
-              {/* Public Auth Routes */}
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/reset-password" element={<ResetPassword />} />
-              <Route path="/verify-email" element={<VerifyEmail />} />
-              <Route path="/verify-otp" element={<VerifyOTP />} />
-
-              {/* Protected Routes */}
-              <Route element={
-                <ProtectedRoute>
-                  <DashboardLayout />
-                </ProtectedRoute>
-              }>
-                {/* Dashboard is now explicitly at /dashboard */}
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/inventory" element={<Inventory />} />
-                <Route path="/pos" element={<POS />} />
-                <Route path="/customers" element={<Customers />} />
-                <Route path="/analytics" element={<Analytics />} />
-                <Route path="/settings" element={<Settings />} />
-                <Route path="/payment/status" element={<PaymentStatus />} />
-                <Route path="/help" element={<Help />} />
-              </Route>
-
-              {/* Fallback */}
-              <Route path="*" element={<Navigate to="/dashboard" replace />} />
-            </Routes>
-          </Suspense>
-        </TutorialProvider>
-      </Router>
-    </AuthProvider>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/cookie" element={<Cookie />} />
+        <Route path="/partner" element={<Partner />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

@@ -1,34 +1,25 @@
 @import "tailwindcss";
 
 :root {
-    /* Colors from Home.tsx - LIGHT THEME UPDATE */
+    /* Colors - DARKER TEAL THEME based on #1a8c8c */
     --navy: #f1f5f9;
-    /* Slate 100 - Dimmer off-white */
     --navy-mid: #e2e8f0;
-    /* Slate 200 */
     --navy-light: #cbd5e1;
-    /* Slate 300 */
-    --accent: #2563eb;
-    /* Blue 600 - Readable on white */
-    --accent-bright: #3b82f6;
-    /* Blue 500 */
-    --accent-glow: rgba(37, 99, 235, 0.15);
-    --accent-glow-strong: rgba(37, 99, 235, 0.25);
+    --accent: #1a8c8c;
+    --accent-bright: #20a3a3;
+    --accent-glow: rgba(26, 140, 140, 0.15);
+    --accent-glow-strong: rgba(26, 140, 140, 0.25);
     --text-primary: #0f172a;
-    /* Slate 900 - Very dark text */
     --text-secondary: #475569;
-    /* Slate 600 */
     --text-muted: #64748b;
-    /* Slate 500 */
     --card-bg: rgba(255, 255, 255, 0.7);
-    /* White with opacity */
-    --card-border: rgba(37, 99, 235, 0.15);
+    --card-border: rgba(26, 140, 140, 0.15);
     --radius: 12px;
 
-    /* Legacy Design System vars (updated for light compatibility) */
-    --primary-blue: #2563eb;
-    --dark-blue: #1e40af;
-    --light-blue: #dbeafe;
+    /* Legacy Design System vars */
+    --primary-blue: #1a8c8c;
+    --dark-blue: #126363;
+    --light-blue: #c0ebeb;
     --bg-light: #f1f5f9;
     --text-dark: #0f172a;
     --text-gray: #475569;
@@ -45,6 +36,7 @@ body {
 html {
     scroll-behavior: smooth;
     scroll-padding-top: 80px;
+    font-size: 14px;
 }
 
 /* ─────────────────────────────────────────────
@@ -71,11 +63,11 @@ html {
 
     0%,
     100% {
-        box-shadow: 0 0 20px var(--accent-glow), 0 0 60px rgba(74, 144, 217, 0.08);
+        box-shadow: 0 0 20px var(--accent-glow), 0 0 60px rgba(26, 140, 140, 0.08);
     }
 
     50% {
-        box-shadow: 0 0 35px var(--accent-glow-strong), 0 0 80px rgba(74, 144, 217, 0.15);
+        box-shadow: 0 0 35px var(--accent-glow-strong), 0 0 80px rgba(26, 140, 140, 0.15);
     }
 }
 
@@ -83,7 +75,6 @@ html {
 /* Fade Reveals */
 .reveal {
     opacity: 1;
-    /* Was 0, forcing visible for debugging */
     transform: translateY(40px);
     transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -95,7 +86,6 @@ html {
 
 .reveal-left {
     opacity: 1;
-    /* Was 0 */
     transform: translateX(-50px);
     transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -107,7 +97,6 @@ html {
 
 .reveal-right {
     opacity: 1;
-    /* Was 0 */
     transform: translateX(50px);
     transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -134,7 +123,7 @@ html {
     animation: pulse-opacity 2s infinite;
 }
 
-/* Spin (used in particle canvas if needed, or icons) */
+/* Spin */
 @keyframes spin {
     to {
         transform: rotate(360deg);
@@ -146,7 +135,7 @@ html {
 }
 
 /* ─────────────────────────────────────────────
-   BACKGROUND ELEMENTS (moved from styled-jsx)
+   BACKGROUND ELEMENTS
    ───────────────────────────────────────────── */
 .bg-mesh {
     position: fixed;
@@ -154,8 +143,7 @@ html {
     z-index: 0;
     pointer-events: none;
     background:
-        radial-gradient(circle at 50% 50%, rgba(37, 99, 235, 0.03) 0%, transparent 50%);
-    /* Subtle center glow */
+        radial-gradient(circle at 50% 50%, rgba(26, 140, 140, 0.03) 0%, transparent 50%);
     background-color: var(--navy);
 }
 
@@ -166,7 +154,6 @@ html {
     pointer-events: none;
     opacity: 0.4;
     background-size: 30px 30px;
-    /* Tighter grid for "graph paper" feel */
     background-image:
         linear-gradient(to right, #cbd5e1 1px, transparent 1px),
         linear-gradient(to bottom, #cbd5e1 1px, transparent 1px);
@@ -180,7 +167,6 @@ html {
     pointer-events: none;
     z-index: 0;
     filter: blur(90px);
-    /* Sharper blur for more defined shapes */
     opacity: 0.5;
     animation: orbFloat 30s ease-in-out infinite alternate;
 }
@@ -188,7 +174,7 @@ html {
 .orb-1 {
     width: 700px;
     height: 700px;
-    background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(26, 140, 140, 0.08) 0%, transparent 70%);
     top: -200px;
     left: 10%;
     animation-delay: 0s;
@@ -197,7 +183,7 @@ html {
 .orb-2 {
     width: 600px;
     height: 600px;
-    background: radial-gradient(circle, rgba(147, 197, 253, 0.12) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(32, 163, 163, 0.12) 0%, transparent 70%);
     bottom: -200px;
     right: 0%;
     animation-delay: -5s;
@@ -206,8 +192,7 @@ html {
 .orb-3 {
     width: 400px;
     height: 400px;
-    background: radial-gradient(circle, rgba(219, 234, 254, 0.4) 0%, transparent 70%);
-    /* Subtle white highlight */
+    background: radial-gradient(circle, rgba(204, 245, 245, 0.4) 0%, transparent 70%);
     top: 30%;
     left: 20%;
     animation-delay: -15s;
