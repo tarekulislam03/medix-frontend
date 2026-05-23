@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import logoDark from "../../assets/logo-dark.png";
-import logoLight from "../../assets/logo-light.png";
 import productVideo from "../../assets/PRODUCT-VIDEO.mp4";
 import { Link } from 'react-router-dom';
 
