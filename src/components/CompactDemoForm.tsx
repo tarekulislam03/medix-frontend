@@ -46,11 +46,6 @@ export default function CompactDemoForm({ className = "", onSuccess }: CompactDe
     }
   };
 
-  const handleReset = () => {
-    setSent(false);
-    setForm({ name: "", phone: "", storeName: "" });
-  };
-
   // ── shared input class — dark theme ──────────────────────────────────────
   const inputCls =
     "w-full bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)] " +

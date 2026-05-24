@@ -3,7 +3,6 @@ import { useState, useEffect, useRef } from "react";
 import logoDark from "../../assets/logo-light.png";
 import productVideo from "../../assets/PRODUCT-VIDEO.mp4";
 import { Link } from 'react-router-dom';
-import BookDemoForm from "../../components/BookDemoForm";
 import CompactDemoForm from "../../components/CompactDemoForm";
 
 // ─────────────────────────────────────────────
@@ -601,20 +600,6 @@ const Features = () => (
 // ─────────────────────────────────────────────
 // ABOUT + STATS ROW
 // ─────────────────────────────────────────────
-
-const StatCounter = ({ value, label, suffix = "" }: { value: number; label: string; suffix?: string }) => {
-    const { count, ref } = useCountUp(value);
-    return (
-        <div ref={ref} className="text-center px-2">
-            <div className="font-heading font-bold text-[clamp(2.2rem,5vw,3.8rem)] text-white leading-none tracking-tight">
-                {count}{suffix}
-            </div>
-            <div className="text-[rgba(255,255,255,0.35)] text-[0.78rem] font-medium mt-2 tracking-wide uppercase">
-                {label}
-            </div>
-        </div>
-    );
-};
 
 const About = () => (
     <section id="about" className="relative z-10 py-24 md:py-32 px-6">
