@@ -23,7 +23,7 @@ export default function BookDemoForm({ className = "", onSuccess }: BookDemoForm
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e) =>
+  const handleChange = (e: { target: { name: any; value: any; }; }) =>
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
   const handleSubmit = async () => {
@@ -110,7 +110,7 @@ export default function BookDemoForm({ className = "", onSuccess }: BookDemoForm
             <input
               name={f.name}
               type={f.type}
-              value={form[f.name]}
+              value={form[f.name as keyof typeof form]}
               onChange={handleChange}
               placeholder={f.placeholder}
               className={inputCls}
