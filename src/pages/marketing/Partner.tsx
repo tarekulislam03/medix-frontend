@@ -5,6 +5,7 @@ import powerbankImg from '../../assets/powerbank.jpg';
 import coolerImg from '../../assets/cooler.jpg';
 import smartwatchImg from '../../assets/smartwatch.webp';
 import earbudsImg from '../../assets/earbuds.webp';
+import BookDemoForm from '@/components/BookDemoForm';
 
 const TablerIcons = {
     Check: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 12l5 5l10 -10" /></svg>,
@@ -111,6 +112,11 @@ const Partner = () => {
                     </div>
                 </div>
             </section>
+            <div className="bg-[#f8fafb] px-4 py-16" id="join">
+    <div className="max-w-2xl mx-auto bg-white rounded-2xl border border-slate-100 shadow-[0_4px_40px_rgba(0,0,0,0.08)] p-8 sm:p-12">
+        <BookDemoForm />
+    </div>
+</div>
 
             {/* Why pharmacies want this — Light Gray */}
             <section className="bg-gray-50 px-4 py-[32px]">
