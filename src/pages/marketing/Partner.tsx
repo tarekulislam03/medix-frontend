@@ -7,6 +7,10 @@ import smartwatchImg from '../../assets/smartwatch.webp';
 import earbudsImg from '../../assets/earbuds.webp';
 import BookDemoForm from '@/components/BookDemoForm';
 
+// ─────────────────────────────────────────────
+// ICONS
+// ─────────────────────────────────────────────
+
 const TablerIcons = {
     Check: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 12l5 5l10 -10" /></svg>,
     Plus: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>,
@@ -23,280 +27,265 @@ const TablerIcons = {
     Question: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 8a3.5 3 0 0 1 3.5 -3h1a3.5 3 0 0 1 3.5 3a3 3 0 0 1 -2 3a3 4 0 0 0 -2 4" /><path d="M12 19l0 .01" /></svg>
 };
 
-const SectionPill = ({ title, icon: Icon }: { title: string, icon: any }) => (
-    <div className="flex justify-center mb-6">
-        <span className="inline-flex items-center gap-1.5 bg-[var(--accent)] text-white text-[11px] font-bold tracking-widest uppercase px-[16px] py-[6px] rounded-full">
-            <Icon />
-            {title}
-        </span>
-    </div>
-);
+// ─────────────────────────────────────────────
+// ACCORDION — Dark Theme
+// ─────────────────────────────────────────────
 
 const Accordion = ({ title, content }: { title: string, content: string }) => {
     const [open, setOpen] = useState(false);
     return (
-        <div className="border border-gray-200 bg-white mb-3">
+        <div className="border-b border-[rgba(255,255,255,0.06)] last:border-b-0">
             <button
                 onClick={() => setOpen(!open)}
-                className="w-full flex items-start gap-4 p-5 text-left bg-transparent border-none cursor-pointer text-slate-900"
+                className="w-full flex items-center justify-between py-5 px-1 text-left bg-transparent border-none cursor-pointer group"
             >
-                <div className="text-[var(--accent)] shrink-0 mt-0.5">
-                    {open ? <TablerIcons.ChevronUp /> : <TablerIcons.Plus />}
+                <span className="font-heading font-semibold text-[0.95rem] text-[rgba(255,255,255,0.85)] pr-4 flex-1 group-hover:text-[var(--accent-bright)] transition-colors duration-300">{title}</span>
+                <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 ${
+                    open
+                        ? 'bg-[var(--accent)] text-white border border-[var(--accent)] rotate-180'
+                        : 'bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)] text-[rgba(255,255,255,0.5)]'
+                }`}>
+                    <TablerIcons.ChevronDown />
                 </div>
-                <span className="font-bold text-[14px] flex-1 pr-4">{title}</span>
             </button>
-            {open && (
-                <div className="px-5 pb-5 pl-[52px] text-gray-600 text-[14px] leading-relaxed">
-                    <p className="m-0">{content}</p>
+            <div className={`faq-answer ${open ? 'open' : ''}`}>
+                <div>
+                    <p className="px-1 pb-5 text-[rgba(255,255,255,0.4)] text-[0.88rem] leading-[1.8] m-0">{content}</p>
                 </div>
-            )}
+            </div>
         </div>
     );
 };
 
+// ─────────────────────────────────────────────
+// PARTNER PAGE
+// ─────────────────────────────────────────────
+
 const Partner = () => {
     return (
-        <div className="min-h-screen bg-white text-slate-900 font-sans antialiased">
-            
-            {/* Simple Nav - Removed bottom border on mobile */}
-            <nav className="bg-slate-900 text-white p-4 sm:border-b border-[rgba(255,255,255,0.1)]">
-                <div className="max-w-7xl mx-auto flex justify-between items-center">
+        <div className="min-h-screen bg-[var(--navy)] text-white font-['Inter',sans-serif] antialiased overflow-x-hidden">
+
+            {/* ── Navbar ────────────────────────────────── */}
+            <nav className="fixed top-0 left-0 right-0 z-[100] py-4 px-6 bg-[rgba(8,8,13,0.88)] backdrop-blur-[16px] border-b border-[rgba(255,255,255,0.06)]">
+                <div className="max-w-[1100px] mx-auto flex justify-between items-center">
                     <Link to="/" className="no-underline flex items-center gap-3 text-white hover:opacity-90 transition-opacity">
-                        <img src={logoDark} alt="MediX Logo" className="w-11 h-11 object-contain" />
-                        <span className="font-['Syne',sans-serif] font-extrabold text-[1.4rem] tracking-tight">
+                        <img src={logoDark} alt="MediX Logo" className="w-10 h-10 object-contain" />
+                        <span className="font-heading font-bold text-[1.3rem] tracking-tight">
                             Medi<span className="text-[var(--accent-bright)]">X</span>
                         </span>
                     </Link>
-                    <Link to="/" className="text-[11px] text-gray-300 no-underline hover:text-white uppercase font-bold tracking-widest">
-                        Back to site
+                    <Link to="/" className="text-[rgba(255,255,255,0.5)] no-underline text-[0.82rem] font-medium hover:text-[var(--accent-bright)] transition-colors uppercase tracking-[1px]">
+                        ← Back to site
                     </Link>
                 </div>
             </nav>
 
-            {/* Hero section — Navy */}
-            <section className="bg-slate-900 px-4 py-[32px] text-center text-white">
-                <div className="max-w-3xl mx-auto">
-                    <SectionPill title="Partner Program" icon={TablerIcons.Bolt} />
-                    
-                    <h1 className="text-[36px] font-bold mb-6 text-white font-['Syne',sans-serif]">
-                        Become Our Partner & Earn
+            {/* ── Hero ────────────────────────────────── */}
+            <section className="pt-[110px] pb-14 px-6 text-center relative">
+                {/* Decorative glow */}
+                <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-[radial-gradient(ellipse,rgba(26,140,140,0.06)_0%,transparent_70%)] pointer-events-none" />
+
+                <div className="max-w-[800px] mx-auto relative z-10">
+                    <span className="inline-flex items-center gap-1.5 bg-[rgba(26,140,140,0.15)] border border-[rgba(26,140,140,0.3)] text-[var(--accent-bright)] text-[0.65rem] font-bold tracking-[1.5px] uppercase px-4 py-1.5 rounded-full mb-6">
+                        <TablerIcons.Bolt /> Partner Program
+                    </span>
+
+                    <h1 className="font-heading font-bold text-[clamp(2.5rem,5vw,3.8rem)] leading-[1.05] tracking-tight mb-4 text-white">
+                        Become Our Partner & <span className="text-[var(--accent-bright)] italic">Earn</span>
                     </h1>
-                    
-                    <div className="bg-transparent inline-block mb-10">
-                        <p className="text-[var(--accent-bright)] text-[24px] font-bold m-0 leading-none font-['Syne',sans-serif]">₹2,500 / sale</p>
+
+                    <div className="mb-10 flex flex-col items-center justify-center">
+                        <p className="text-[rgba(255,255,255,0.6)] text-[1rem] md:text-[1.1rem] mb-2">Get paid for every pharmacy that signs up.</p>
+                        <p className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--accent-bright)] to-teal-200 text-[clamp(2.8rem,7vw,4.5rem)] font-extrabold font-heading m-0 leading-none drop-shadow-[0_0_20px_rgba(26,140,140,0.4)]">₹2,500 <span className="text-[1.2rem] md:text-[1.5rem] text-[rgba(255,255,255,0.5)] font-medium bg-none tracking-normal">/ sale</span></p>
                     </div>
-                    
-                    <div className="flex flex-col sm:flex-row gap-6 items-center justify-center mb-10">
-                        <a href="#join" className="bg-[var(--accent)] text-white no-underline px-8 py-3 font-bold text-[14px] rounded-full w-full sm:w-auto shadow-[0_6px_30px_rgba(26,140,140,0.4)] transition-all hover:-translate-y-1 hover:shadow-[0_10px_40px_rgba(26,140,140,0.6)]">
-                            Start earning
-                        </a>
-                        <a href="#how-it-works" className="bg-transparent text-white no-underline font-bold text-[14px] hover:underline">
-                            Learn more
+
+                    <div className="flex flex-col sm:flex-row gap-5 items-center justify-center mb-10">
+                        <a href="#join" className="w-full sm:w-auto bg-gradient-to-r from-[var(--accent)] to-[var(--accent-bright)] text-white no-underline px-10 py-4 font-bold text-[1rem] rounded-full shadow-[0_8px_30px_rgba(26,140,140,0.4)] transition-all hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(26,140,140,0.6)] border border-[rgba(255,255,255,0.1)]">
+                            Start earning today
                         </a>
                     </div>
 
-                    {/* Stats - Horizontal Grid */}
-                    <div className="grid grid-cols-3 divide-x divide-white/20 border-t border-white/20 pt-6 mt-6 text-left">
-                        <div className="px-4">
-                            <p className="text-[14px] font-bold text-white m-0">48hr</p>
-                            <p className="text-gray-400 text-[11px] m-0 mt-1 uppercase font-bold">Payout</p>
-                        </div>
-                        <div className="px-4">
-                            <p className="text-[24px] font-bold text-[var(--accent-bright)] m-0 leading-none font-['Syne',sans-serif]">₹2500</p>
-                            <p className="text-gray-400 text-[11px] m-0 mt-2 uppercase font-bold">Commission</p>
-                        </div>
-                        <div className="px-4">
-                            <p className="text-[14px] font-bold text-white m-0">50</p>
-                            <p className="text-gray-400 text-[11px] m-0 mt-1 uppercase font-bold">Pts per sale</p>
-                        </div>
-                    </div>
+                    
                 </div>
             </section>
-            <div className="bg-[#f8fafb] px-4 py-16" id="join">
-    <div className="max-w-2xl mx-auto bg-white rounded-2xl border border-slate-100 shadow-[0_4px_40px_rgba(0,0,0,0.08)] p-8 sm:p-12">
-        <BookDemoForm />
-    </div>
-</div>
 
-            {/* Why pharmacies want this — Light Gray */}
-            <section className="bg-gray-50 px-4 py-[32px]">
-                <div className="max-w-4xl mx-auto">
-                    <h2 className="text-[24px] font-bold mb-8 text-center text-slate-900 font-['Syne',sans-serif]">Why pharmacies want this</h2>
-                    
-                    <div className="grid grid-cols-2 gap-4">
+            {/* ── Registration Form ────────────────────── */}
+            <section className="px-6 pb-12 pt-6" id="join">
+                <div className="max-w-[600px] mx-auto bg-[rgba(255,255,255,0.02)] backdrop-blur-sm rounded-[24px] border border-[rgba(255,255,255,0.07)] p-8 sm:p-10 relative overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.4)]">
+                    <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-[var(--accent)] to-[var(--accent-bright)]"></div>
+                    <BookDemoForm />
+                </div>
+            </section>
+
+            {/* ── Why pharmacies want this ────────────── */}
+            <section className="px-6 py-14">
+                <div className="max-w-[900px] mx-auto">
+                    <h2 className="font-heading font-bold text-[clamp(1.6rem,3.5vw,2.2rem)] mb-8 text-center text-white">
+                        Why pharmacies <span className="text-[var(--accent-bright)] italic">want this</span>
+                    </h2>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                         {[
                             { icon: TablerIcons.Target, title: "Built for them", desc: "Tailored strictly for Indian pharmacy workflows." },
                             { icon: TablerIcons.TrendingUp, title: "Cheaper", desc: "Tired of Marg ERP and expensive yearly fees." },
                             { icon: TablerIcons.Shield, title: "One-time fee", desc: "No recurring subs. Pay once, use forever." },
                             { icon: TablerIcons.Star, title: "Simple UI", desc: "Fast and remarkably easy for any staff member." }
                         ].map((item, i) => (
-                            <div key={i} className="bg-white border border-gray-200 p-5 rounded-sm">
-                                <div className="text-[var(--accent)] mb-3">
+                            <div key={i} className="bg-[rgba(255,255,255,0.02)] backdrop-blur-md border border-[rgba(255,255,255,0.06)] p-6 rounded-[16px] group hover:border-[var(--accent)] hover:shadow-[0_8px_30px_rgba(26,140,140,0.15)] hover:-translate-y-1 transition-all duration-400 cursor-default">
+                                <div className="w-10 h-10 rounded-xl bg-[rgba(26,140,140,0.1)] border border-[rgba(26,140,140,0.15)] flex items-center justify-center text-[var(--accent-bright)] mb-4 group-hover:bg-gradient-to-br group-hover:from-[var(--accent)] group-hover:to-[var(--accent-bright)] group-hover:text-white group-hover:scale-110 transition-all duration-300 shadow-sm">
                                     <item.icon />
                                 </div>
-                                <h3 className="font-bold text-[14px] mb-1 text-slate-900">{item.title}</h3>
-                                <p className="text-gray-600 text-[14px] m-0 leading-relaxed">{item.desc}</p>
+                                <h3 className="font-heading font-semibold text-[1.05rem] mb-1.5 text-white">{item.title}</h3>
+                                <p className="text-[rgba(255,255,255,0.65)] text-[0.88rem] m-0 leading-[1.7]">{item.desc}</p>
                             </div>
                         ))}
                     </div>
                 </div>
             </section>
 
-            {/* How it works section — White */}
-            <section id="how-it-works" className="bg-white px-4 py-[32px]">
-                <div className="max-w-3xl mx-auto">
-                    <h2 className="text-[24px] font-bold mb-8 text-center text-slate-900 font-['Syne',sans-serif]">Earning Process</h2>
+            {/* ── How it works ────────────────────────── */}
+            <section id="how-it-works" className="px-6 py-14">
+                <div className="max-w-[750px] mx-auto">
+                    <h2 className="font-heading font-bold text-[clamp(1.6rem,3.5vw,2.2rem)] mb-10 text-center text-white">
+                        Earning <span className="text-[var(--accent-bright)] italic">Process</span>
+                    </h2>
 
-                    {/* Your role - Navy styling */}
-                    <div className="bg-slate-900 border border-slate-900 text-white p-6 mb-8 rounded-sm">
-                        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
-                            <h3 className="font-bold text-[14px] m-0 uppercase tracking-widest text-white">Your role</h3>
+                    {/* Your Role */}
+                    <div className="bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.06)] rounded-[20px] p-7 mb-6 backdrop-blur-sm">
+                        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-[rgba(255,255,255,0.06)]">
+                            <h3 className="font-bold text-[0.72rem] m-0 uppercase tracking-[2px] text-[rgba(255,255,255,0.6)]">Your role</h3>
                         </div>
 
                         <div className="space-y-6">
-                            <div className="flex gap-4">
-                                <div className="text-[14px] text-gray-400 font-bold w-4">1.</div>
-                                <div>
-                                    <h4 className="font-bold text-[14px] mb-1 text-white">Identify</h4>
-                                    <p className="text-gray-300 m-0 text-[14px]">Visit pharmacies in your territory.</p>
+                            {[
+                                { step: "1", title: "Identify", desc: "Visit pharmacies in your territory." },
+                                { step: "2", title: "Pitch", desc: "Take 5 mins to explain Medix. Convince them to buy." },
+                                { step: "3", title: "Share contact", desc: "Tell them our team will call for a demo." },
+                            ].map((item) => (
+                                <div key={item.step} className="flex gap-4">
+                                    <div className="w-8 h-8 rounded-full bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.1)] flex items-center justify-center text-[rgba(255,255,255,0.6)] text-[0.75rem] font-bold shrink-0">{item.step}</div>
+                                    <div>
+                                        <h4 className="font-heading font-semibold text-[0.95rem] mb-1 text-white">{item.title}</h4>
+                                        <p className="text-[rgba(255,255,255,0.6)] m-0 text-[0.88rem]">{item.desc}</p>
+                                    </div>
                                 </div>
-                            </div>
-
-                            <div className="flex gap-4">
-                                <div className="text-[14px] text-gray-400 font-bold w-4">2.</div>
-                                <div>
-                                    <h4 className="font-bold text-[14px] mb-1 text-white">Pitch</h4>
-                                    <p className="text-gray-300 m-0 text-[14px]">Take 5 mins to explain Medix. Convince them to buy.</p>
-                                </div>
-                            </div>
-
-                            <div className="flex gap-4">
-                                <div className="text-[14px] text-gray-400 font-bold w-4">3.</div>
-                                <div>
-                                    <h4 className="font-bold text-[14px] mb-1 text-white">Share contact</h4>
-                                    <p className="text-gray-300 m-0 text-[14px]">Tell them our team will call for a demo.</p>
-                                </div>
-                            </div>
+                            ))}
                         </div>
                     </div>
 
-                    {/* Full-width transition banner */}
-                    <div className="w-full bg-gray-100 py-3 text-center mb-8 border-y border-gray-200">
-                        <span className="font-bold text-[11px] text-gray-500 tracking-widest uppercase">
-                            Then we take over
-                        </span>
+                    {/* Transition */}
+                    <div className="flex items-center gap-4 my-5">
+                        <div className="h-px flex-1 bg-[rgba(255,255,255,0.06)]"></div>
+                        <span className="font-bold text-[0.65rem] text-[rgba(255,255,255,0.4)] tracking-[2px] uppercase shrink-0">Then we take over</span>
+                        <div className="h-px flex-1 bg-[rgba(255,255,255,0.06)]"></div>
                     </div>
 
-                    {/* Our role - Solid Teal Styling */}
-                    <div className="bg-[var(--accent)] border border-[var(--accent)] text-white p-6 rounded-sm mb-8">
-                        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/20">
-                            <h3 className="font-bold text-[14px] m-0 uppercase tracking-widest text-white">Our role</h3>
+                    {/* Our Role */}
+                    <div className="bg-gradient-to-br from-[rgba(26,140,140,0.1)] to-[rgba(26,140,140,0.02)] border-[2px] border-[var(--accent)] rounded-[20px] p-7 mb-6 relative shadow-[0_0_40px_rgba(26,140,140,0.1)] backdrop-blur-sm">
+                        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-[rgba(26,140,140,0.2)]">
+                            <h3 className="font-bold text-[0.72rem] m-0 uppercase tracking-[2px] text-[var(--accent-bright)]">Our role</h3>
                         </div>
 
                         <div className="space-y-6">
-                            <div className="flex gap-4">
-                                <div className="text-[14px] text-teal-100 font-bold w-4">4.</div>
-                                <div>
-                                    <h4 className="font-bold text-[14px] mb-1 text-white">Follow-up & demo</h4>
-                                    <p className="text-teal-50 m-0 text-[14px]">We handle all technical questions.</p>
+                            {[
+                                { step: "4", title: "Follow-up & demo", desc: "We handle all technical questions." },
+                                { step: "5", title: "Close the deal", desc: "We finalize payment and setup." },
+                                { step: "6", title: "Payout", desc: "Your commission is credited instantly." },
+                            ].map((item) => (
+                                <div key={item.step} className="flex gap-4">
+                                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--accent)] to-[var(--accent-bright)] flex items-center justify-center text-white text-[0.75rem] font-bold shrink-0 shadow-md">{item.step}</div>
+                                    <div>
+                                        <h4 className="font-heading font-semibold text-[0.95rem] mb-1 text-white">{item.title}</h4>
+                                        <p className="text-[rgba(255,255,255,0.7)] m-0 text-[0.88rem]">{item.desc}</p>
+                                    </div>
                                 </div>
-                            </div>
-
-                            <div className="flex gap-4">
-                                <div className="text-[14px] text-teal-100 font-bold w-4">5.</div>
-                                <div>
-                                    <h4 className="font-bold text-[14px] mb-1 text-white">Close the deal</h4>
-                                    <p className="text-teal-50 m-0 text-[14px]">We finalize payment and setup.</p>
-                                </div>
-                            </div>
-
-                            <div className="flex gap-4">
-                                <div className="text-[14px] text-teal-100 font-bold w-4">6.</div>
-                                <div>
-                                    <h4 className="font-bold text-[14px] mb-1 text-white">Payout</h4>
-                                    <p className="text-teal-50 m-0 text-[14px]">Your commission is credited instantly.</p>
-                                </div>
-                            </div>
+                            ))}
                         </div>
                     </div>
 
-                    {/* Standalone Payout Badge */}
-                    <div className="text-center bg-gray-50 border border-gray-200 py-6 px-4">
-                        <span className="inline-block bg-[var(--accent)] text-white text-[11px] font-bold px-3 py-1 uppercase tracking-widest mb-4">
+                    {/* Payout Badge */}
+                    <div className="text-center bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.07)] rounded-[16px] py-8 px-6">
+                        <span className="inline-block bg-[var(--accent)] text-white text-[0.6rem] font-bold px-3.5 py-1.5 uppercase tracking-[2px] rounded-full mb-4 shadow-[0_4px_15px_rgba(26,140,140,0.3)]">
                             Every single sale
                         </span>
-                        <p className="text-[24px] font-bold m-0 text-slate-900 leading-none font-['Syne',sans-serif]">+50 points</p>
+                        <p className="font-heading font-bold text-[1.8rem] m-0 text-white leading-none">+50 points</p>
                     </div>
                 </div>
             </section>
 
-            {/* Rewards section — Light Gray */}
-            <section className="bg-gray-50 px-4 py-[32px]">
-                <div className="max-w-3xl mx-auto">
-                    <SectionPill title="Milestone Rewards" icon={TablerIcons.Gift} />
-                    <h2 className="text-[24px] font-bold mb-8 text-center text-slate-900 font-['Syne',sans-serif]">Earn Rewards</h2>
-                    
-                    <div className="flex flex-col gap-6">
+            {/* ── Rewards ────────────────────────────── */}
+            <section className="px-6 py-14">
+                <div className="max-w-[750px] mx-auto">
+                    <div className="text-center mb-10">
+                        <span className="inline-flex items-center gap-1.5 bg-[var(--accent)] text-white text-[0.6rem] font-bold tracking-[1.5px] uppercase px-4 py-1.5 rounded-full mb-4 shadow-[0_4px_15px_rgba(26,140,140,0.3)]">
+                            <TablerIcons.Gift /> Milestone Rewards
+                        </span>
+                        <h2 className="font-heading font-bold text-[clamp(1.6rem,3.5vw,2.2rem)] text-white">
+                            Earn <span className="text-[var(--accent-bright)] italic">Rewards</span>
+                        </h2>
+                    </div>
+
+                    <div className="flex flex-col gap-5">
                         {/* Bronze */}
-                        <div className="bg-white border border-gray-200">
-                            <div className="bg-slate-900 text-white p-4 flex justify-between items-center">
-                                <div className="font-bold text-[14px]">Bronze Tier</div>
-                                <div className="text-[11px] font-bold tracking-widest uppercase">150 pts to unlock</div>
+                        <div className="bg-[rgba(255,255,255,0.02)] backdrop-blur-sm border border-[rgba(255,255,255,0.06)] rounded-[18px] overflow-hidden hover:border-[rgba(255,255,255,0.15)] transition-all duration-300">
+                            <div className="bg-[rgba(255,255,255,0.04)] border-b border-[rgba(255,255,255,0.06)] px-6 py-3.5 flex justify-between items-center">
+                                <span className="font-heading font-semibold text-[0.95rem] text-white">Bronze Tier</span>
+                                <span className="text-[0.65rem] font-bold tracking-[1.5px] uppercase text-[rgba(255,255,255,0.5)]">150 pts to unlock</span>
                             </div>
-                            <div className="p-6 flex items-start gap-6">
-                                <img src={powerbankImg} alt="USB Power Bank" className="w-24 h-24 object-cover border border-gray-100 shrink-0" />
+                            <div className="p-6 flex items-start gap-5">
+                                <img src={powerbankImg} alt="USB Power Bank" className="w-20 h-20 object-cover rounded-xl border border-[rgba(255,255,255,0.08)] shrink-0" />
                                 <div>
-                                    <h3 className="font-bold text-[14px] mb-2 text-slate-900">USB Power Bank</h3>
-                                    <p className="text-gray-500 text-[14px] m-0 mb-3 font-medium">Earned after 3 sales</p>
-                                    <p className="text-[11px] font-bold text-[var(--accent)] uppercase tracking-wide m-0">3 more sales to unlock</p>
+                                    <h3 className="font-heading font-semibold text-[1.05rem] mb-1.5 text-white">USB Power Bank</h3>
+                                    <p className="text-[rgba(255,255,255,0.6)] text-[0.88rem] m-0 mb-2">Earned after 3 sales</p>
+                                    <p className="text-[0.72rem] font-bold text-[var(--accent-bright)] uppercase tracking-[1px] m-0">3 more sales to unlock</p>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Silver */}
-                        <div className="bg-white border-[2px] border-[var(--accent)]">
-                            <div className="bg-[var(--accent)] text-white p-4 flex justify-between items-center">
-                                <div className="font-bold text-[14px]">Silver Tier</div>
-                                <div className="text-[11px] font-bold tracking-widest uppercase">300 pts to unlock</div>
+                        {/* Silver — Highlighted */}
+                        <div className="bg-gradient-to-br from-[rgba(26,140,140,0.15)] to-[rgba(26,140,140,0.02)] backdrop-blur-md border-[2px] border-[var(--accent)] rounded-[18px] overflow-hidden shadow-[0_0_40px_rgba(26,140,140,0.15)]">
+                            <div className="bg-gradient-to-r from-[var(--accent)] to-[var(--accent-bright)] px-6 py-3.5 flex justify-between items-center">
+                                <span className="font-heading font-bold text-[0.95rem] text-white shadow-sm">Silver Tier</span>
+                                <span className="text-[0.65rem] font-bold tracking-[1.5px] uppercase text-white/90">300 pts to unlock</span>
                             </div>
-                            <div className="p-6 flex items-start gap-6 bg-[rgba(26,140,140,0.02)]">
-                                <img src={coolerImg} alt="Mini Cooler" className="w-24 h-24 object-cover border border-[rgba(26,140,140,0.1)] shrink-0" />
+                            <div className="p-6 flex items-start gap-5">
+                                <img src={coolerImg} alt="Mini Cooler" className="w-20 h-20 object-cover rounded-xl border border-[rgba(26,140,140,0.3)] shrink-0" />
                                 <div>
-                                    <h3 className="font-bold text-[14px] mb-2 text-slate-900">Mini Cooler</h3>
-                                    <p className="text-gray-500 text-[14px] m-0 mb-3 font-medium">Earned after 6 sales</p>
-                                    <p className="text-[11px] font-bold text-[var(--accent)] uppercase tracking-wide m-0">6 more sales to unlock</p>
+                                    <h3 className="font-heading font-semibold text-[1.05rem] mb-1.5 text-white">Mini Cooler</h3>
+                                    <p className="text-[rgba(255,255,255,0.7)] text-[0.88rem] m-0 mb-2">Earned after 6 sales</p>
+                                    <p className="text-[0.72rem] font-bold text-[var(--accent-bright)] uppercase tracking-[1px] m-0">6 more sales to unlock</p>
                                 </div>
                             </div>
                         </div>
 
                         {/* Gold */}
-                        <div className="bg-white border border-gray-200">
-                            <div className="bg-slate-900 text-white p-4 flex justify-between items-center">
-                                <div className="font-bold text-[14px]">Gold Tier</div>
-                                <div className="text-[11px] font-bold tracking-widest uppercase">450 pts to unlock</div>
+                        <div className="bg-[rgba(255,255,255,0.02)] backdrop-blur-sm border border-[rgba(255,255,255,0.06)] rounded-[18px] overflow-hidden hover:border-[rgba(255,255,255,0.15)] transition-all duration-300">
+                            <div className="bg-[rgba(255,255,255,0.04)] border-b border-[rgba(255,255,255,0.06)] px-6 py-3.5 flex justify-between items-center">
+                                <span className="font-heading font-semibold text-[0.95rem] text-white">Gold Tier</span>
+                                <span className="text-[0.65rem] font-bold tracking-[1.5px] uppercase text-[rgba(255,255,255,0.5)]">450 pts to unlock</span>
                             </div>
-                            <div className="p-6 flex items-start gap-6">
-                                <img src={smartwatchImg} alt="Smartwatch" className="w-24 h-24 object-cover border border-gray-100 shrink-0" />
+                            <div className="p-6 flex items-start gap-5">
+                                <img src={smartwatchImg} alt="Smartwatch" className="w-20 h-20 object-cover rounded-xl border border-[rgba(255,255,255,0.08)] shrink-0" />
                                 <div>
-                                    <h3 className="font-bold text-[14px] mb-2 text-slate-900">Smartwatch</h3>
-                                    <p className="text-gray-500 text-[14px] m-0 mb-3 font-medium">Earned after 9 sales</p>
-                                    <p className="text-[11px] font-bold text-[var(--accent)] uppercase tracking-wide m-0">9 more sales to unlock</p>
+                                    <h3 className="font-heading font-semibold text-[1.05rem] mb-1.5 text-white">Smartwatch</h3>
+                                    <p className="text-[rgba(255,255,255,0.6)] text-[0.88rem] m-0 mb-2">Earned after 9 sales</p>
+                                    <p className="text-[0.72rem] font-bold text-[var(--accent-bright)] uppercase tracking-[1px] m-0">9 more sales to unlock</p>
                                 </div>
                             </div>
                         </div>
 
                         {/* Platinum */}
-                        <div className="bg-white border border-gray-200">
-                            <div className="bg-slate-900 text-white p-4 flex justify-between items-center">
-                                <div className="font-bold text-[14px]">Platinum Tier</div>
-                                <div className="text-[11px] font-bold tracking-widest uppercase">600 pts to unlock</div>
+                        <div className="bg-[rgba(255,255,255,0.02)] backdrop-blur-sm border border-[rgba(255,255,255,0.06)] rounded-[18px] overflow-hidden hover:border-[rgba(255,255,255,0.15)] transition-all duration-300">
+                            <div className="bg-[rgba(255,255,255,0.04)] border-b border-[rgba(255,255,255,0.06)] px-6 py-3.5 flex justify-between items-center">
+                                <span className="font-heading font-semibold text-[0.95rem] text-white">Platinum Tier</span>
+                                <span className="text-[0.65rem] font-bold tracking-[1.5px] uppercase text-[rgba(255,255,255,0.5)]">600 pts to unlock</span>
                             </div>
-                            <div className="p-6 flex items-start gap-6">
-                                <img src={earbudsImg} alt="Premium Earbuds" className="w-24 h-24 object-cover border border-gray-100 shrink-0" />
+                            <div className="p-6 flex items-start gap-5">
+                                <img src={earbudsImg} alt="Premium Earbuds" className="w-20 h-20 object-cover rounded-xl border border-[rgba(255,255,255,0.08)] shrink-0" />
                                 <div>
-                                    <h3 className="font-bold text-[14px] mb-2 text-slate-900">Premium Earbuds</h3>
-                                    <p className="text-gray-500 text-[14px] m-0 mb-3 font-medium">Earned after 12 sales</p>
-                                    <p className="text-[11px] font-bold text-[var(--accent)] uppercase tracking-wide m-0">12 more sales to unlock</p>
+                                    <h3 className="font-heading font-semibold text-[1.05rem] mb-1.5 text-white">Premium Earbuds</h3>
+                                    <p className="text-[rgba(255,255,255,0.6)] text-[0.88rem] m-0 mb-2">Earned after 12 sales</p>
+                                    <p className="text-[0.72rem] font-bold text-[var(--accent-bright)] uppercase tracking-[1px] m-0">12 more sales to unlock</p>
                                 </div>
                             </div>
                         </div>
@@ -304,54 +293,82 @@ const Partner = () => {
                 </div>
             </section>
 
-            {/* FAQ section — White */}
-            <section className="bg-white px-4 py-[32px]">
-                <div className="max-w-2xl mx-auto">
-                    <SectionPill title="FAQ" icon={TablerIcons.Question} />
-                    <h2 className="text-[24px] font-bold mb-2 text-center text-slate-900 font-['Syne',sans-serif]">Common questions</h2>
-                    <p className="text-center text-[14px] text-gray-500 mb-8">Everything you need to know before joining.</p>
-                    
+            {/* ── FAQ ────────────────────────────────── */}
+            <section className="px-6 py-14">
+                <div className="max-w-[650px] mx-auto">
+                    <div className="text-center mb-10">
+                        <span className="inline-flex items-center gap-1.5 bg-[var(--accent)] text-white text-[0.6rem] font-bold tracking-[1.5px] uppercase px-4 py-1.5 rounded-full mb-4 shadow-[0_4px_15px_rgba(26,140,140,0.3)]">
+                            <TablerIcons.Question /> FAQ
+                        </span>
+                        <h2 className="font-heading font-bold text-[clamp(1.6rem,3.5vw,2.2rem)] text-white mb-2">Common questions</h2>
+                        <p className="text-[rgba(255,255,255,0.6)] text-[0.95rem]">Everything you need to know before joining.</p>
+                    </div>
+
                     <div>
-                        <Accordion 
-                            title="When do I get paid?" 
-                            content="Within 24 hours of the pharmacy making their final payment." 
+                        <Accordion
+                            title="When do I get paid?"
+                            content="Within 24 hours of the pharmacy making their final payment."
                         />
-                        <Accordion 
-                            title="How do I get paid?" 
-                            content="Direct bank transfer or UPI. Whichever you prefer." 
+                        <Accordion
+                            title="How do I get paid?"
+                            content="Direct bank transfer or UPI. Whichever you prefer."
                         />
-                        <Accordion 
-                            title="How much can I earn?" 
-                            content="There is no cap. Sell to 100 pharmacies, get paid for 100 pharmacies." 
+                        <Accordion
+                            title="How much can I earn?"
+                            content="There is no cap. Sell to 100 pharmacies, get paid for 100 pharmacies."
                         />
-                        <Accordion 
-                            title="Do I handle tech support?" 
-                            content="No. You only do the introduction. We handle demos, installation, and support." 
+                        <Accordion
+                            title="Do I handle tech support?"
+                            content="No. You only do the introduction. We handle demos, installation, and support."
                         />
                     </div>
                 </div>
             </section>
 
-            {/* Final CTA section — Navy */}
-            <section id="join" className="bg-slate-900 px-4 py-[32px] text-center">
-                <div className="max-w-2xl mx-auto">
-                    <h2 className="text-[24px] font-bold mb-8 text-white font-['Syne',sans-serif]">
-                        120 pharmacies need MediX. Go find them.
-                    </h2>
-                    
-                    <a href="tel:+918101402916" className="w-full flex items-center justify-center gap-3 bg-white text-slate-900 px-8 py-4 rounded-full font-bold text-[14px] no-underline transition-all hover:-translate-y-1 hover:shadow-[0_10px_40px_rgba(255,255,255,0.3)] shadow-[0_6px_30px_rgba(255,255,255,0.1)] mb-8">
-                        <TablerIcons.Rocket /> Start earning today
-                    </a>
-                    
-                    <div className="bg-slate-800 border border-slate-700 p-4 rounded-sm text-[14px] text-gray-300 mb-8">
-                        <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-                            <span className="font-bold text-white">+91 8101402916</span>
-                            <span className="hidden sm:inline text-slate-600">|</span>
-                            <span>medix.pos@gmail.com</span>
+            {/* ── Final CTA ────────────────────────────── */}
+            <section className="px-6 py-14 mb-8">
+                <div className="max-w-[700px] mx-auto">
+                    <div className="bg-[#101018] rounded-[28px] p-10 md:p-14 text-center relative overflow-hidden border border-[rgba(255,255,255,0.06)] shadow-[0_20px_60px_rgba(0,0,0,0.5)]">
+                        {/* Inner glow */}
+                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[400px] h-[200px] bg-[radial-gradient(ellipse,rgba(26,140,140,0.1)_0%,transparent_70%)] pointer-events-none" />
+                        <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[var(--accent)] to-transparent opacity-30" />
+
+                        <div className="relative z-10">
+                            <h2 className="font-heading font-bold text-[clamp(1.4rem,3vw,2rem)] mb-8 text-white leading-[1.3]">
+                                120 pharmacies need MediX.<br />Go <span className="text-[var(--accent-bright)] italic">find them</span>.
+                            </h2>
+
+                            <a href="tel:+918101402916" className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[var(--accent)] text-white px-10 py-4 rounded-full font-bold text-[0.95rem] no-underline transition-all hover:-translate-y-1 hover:shadow-[0_10px_40px_rgba(26,140,140,0.5)] shadow-[0_6px_30px_rgba(26,140,140,0.35)] mb-8">
+                                <TablerIcons.Rocket /> Start earning today
+                            </a>
+
+                            <div className="bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.07)] p-4 rounded-xl text-[0.88rem] text-[rgba(255,255,255,0.5)]">
+                                <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
+                                    <span className="font-bold text-white">+91 8101402916</span>
+                                    <span className="hidden sm:inline text-[rgba(255,255,255,0.15)]">|</span>
+                                    <span>medix.pos@gmail.com</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
+
+            {/* ── Footer ────────────────────────────── */}
+            <footer className="px-6 py-8 border-t border-[rgba(255,255,255,0.05)]">
+                <div className="max-w-[1100px] mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+                    <p className="text-[rgba(255,255,255,0.25)] text-[0.75rem]">© 2026 MediX Technologies. All rights reserved.</p>
+                    <div className="flex gap-6">
+                        {[
+                            { label: "Privacy", path: "/privacy" },
+                            { label: "Terms", path: "/terms" },
+                            { label: "Home", path: "/" }
+                        ].map((l) => (
+                            <Link key={l.label} to={l.path} className="text-[rgba(255,255,255,0.25)] no-underline text-[0.75rem] hover:text-[var(--accent-bright)] transition-colors">{l.label}</Link>
+                        ))}
+                    </div>
+                </div>
+            </footer>
         </div>
     );
 };

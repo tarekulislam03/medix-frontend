@@ -10,9 +10,6 @@ const CheckIcon = () => (
 );
 
 // ── BookDemoForm ─────────────────────────────────────────────────────────────
-// Props:
-//   className  – optional extra classes on the wrapper div
-//   onSuccess  – optional callback fired after successful submission
 interface BookDemoFormProps {
   className?: string;
   onSuccess?: () => void;
@@ -54,34 +51,34 @@ export default function BookDemoForm({ className = "", onSuccess }: BookDemoForm
     setForm({ name: "", email: "", phone: "", message: "" });
   };
 
-  // ── shared input class ──────────────────────────────────────────────────
+  // ── shared input class — dark theme ──────────────────────────────────────
   const inputCls =
-    "w-full bg-[rgba(255,255,255,0.5)] border border-[rgba(26,140,140,0.2)] " +
-    "rounded-[12px] p-[14px_16px] text-[var(--text-primary)] text-[0.95rem] " +
+    "w-full bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)] " +
+    "rounded-[12px] p-[13px_16px] text-white text-[0.92rem] " +
     "font-sans outline-none transition-all duration-300 " +
-    "focus:border-[var(--accent)] focus:ring-[4px] focus:ring-[rgba(26,140,140,0.15)] " +
-    "focus:bg-white placeholder-[var(--text-muted)]";
+    "focus:border-[var(--accent)] focus:ring-[3px] focus:ring-[rgba(26,140,140,0.15)] " +
+    "focus:bg-[rgba(255,255,255,0.06)] placeholder-[rgba(255,255,255,0.2)]";
 
   const labelCls =
-    "text-[0.75rem] text-[var(--text-muted)] font-bold uppercase tracking-[1px] mb-2 block";
+    "text-[0.7rem] text-[rgba(255,255,255,0.3)] font-bold uppercase tracking-[1px] mb-2 block";
 
   // ── success state ────────────────────────────────────────────────────────
   if (sent) {
     return (
       <div className={`text-center py-10 ${className}`}>
-        <div className="w-[72px] h-[72px] rounded-full bg-[rgba(76,175,80,0.12)] border-2 border-[rgba(76,175,80,0.3)] flex items-center justify-center mx-auto mb-6 text-[#4caf50]">
+        <div className="w-[72px] h-[72px] rounded-full bg-[rgba(76,175,80,0.1)] border-2 border-[rgba(76,175,80,0.25)] flex items-center justify-center mx-auto mb-6 text-[#4caf50]">
           <CheckIcon />
         </div>
-        <h3 className="font-['Syne',sans-serif] font-bold text-[1.4rem] mb-2.5">
+        <h3 className="font-heading font-bold text-[1.4rem] mb-2.5 text-white">
           We got your message!
         </h3>
-        <p className="text-[var(--text-secondary)] text-[0.9rem] leading-[1.7]">
+        <p className="text-[rgba(255,255,255,0.5)] text-[0.9rem] leading-[1.7]">
           Our team will reach out within 24 hours to schedule your personalized demo.
           Thanks, {form.name}!
         </p>
         <button
           onClick={handleReset}
-          className="mt-6 bg-transparent border border-[rgba(26,140,140,0.3)] text-[var(--accent-bright)] px-6 py-2.5 rounded-full text-[0.85rem] cursor-pointer font-medium hover:bg-[rgba(26,140,140,0.05)] transition-colors"
+          className="mt-6 bg-transparent border border-[rgba(26,140,140,0.25)] text-[var(--accent-bright)] px-6 py-2.5 rounded-full text-[0.85rem] cursor-pointer font-medium hover:bg-[rgba(26,140,140,0.08)] transition-colors"
         >
           Send another →
         </button>
@@ -92,15 +89,15 @@ export default function BookDemoForm({ className = "", onSuccess }: BookDemoForm
   // ── form state ───────────────────────────────────────────────────────────
   return (
     <div className={`w-full ${className}`}>
-      <h3 className="font-['Syne',sans-serif] font-bold text-[1.4rem] mb-2 text-[var(--text-primary)]">
+      <h3 className="font-heading font-bold text-[1.3rem] mb-2 text-white">
         Registration Form
       </h3>
-      <p className="text-[var(--text-secondary)] text-[0.9rem] mb-[32px]">
+      <p className="text-[rgba(255,255,255,0.4)] text-[0.88rem] mb-[28px]">
         Fill out the form below ato register for Partnership Program.
       </p>
 
       {/* Name + Phone */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
         {[
           { label: "Full Name", name: "name", placeholder: "Jane Smith", type: "text" },
           { label: "Phone",     name: "phone", placeholder: "+91 9876543210", type: "tel" },
@@ -120,7 +117,7 @@ export default function BookDemoForm({ className = "", onSuccess }: BookDemoForm
       </div>
 
       {/* Email */}
-      <div className="mb-5">
+      <div className="mb-4">
         <label className={labelCls}>Email Address</label>
         <input
           name="email"
@@ -133,13 +130,13 @@ export default function BookDemoForm({ className = "", onSuccess }: BookDemoForm
       </div>
 
       {/* Message */}
-      <div className="mb-8">
+      <div className="mb-7">
         <label className={labelCls}>Message</label>
         <textarea
           name="message"
           value={form.message}
           onChange={handleChange}
-          placeholder="Tell us about your pharmacy..."
+          placeholder="Tell us about yourself..."
           rows={4}
           className={`${inputCls} resize-none`}
         />
@@ -149,19 +146,19 @@ export default function BookDemoForm({ className = "", onSuccess }: BookDemoForm
       <button
         onClick={handleSubmit}
         disabled={loading || !form.name || !form.email}
-        className="w-full bg-[var(--accent)] text-white px-6 py-[16px] rounded-[12px] text-[1rem] font-bold tracking-[0.5px] shadow-[0_4px_20px_rgba(26,140,140,0.4)] flex items-center justify-center transition-all duration-300 hover:shadow-[0_8px_30px_rgba(26,140,140,0.6)] hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+        className="w-full bg-[var(--accent)] text-white px-6 py-[14px] rounded-[12px] text-[0.95rem] font-bold tracking-[0.5px] shadow-[0_4px_20px_rgba(26,140,140,0.3)] flex items-center justify-center transition-all duration-300 hover:shadow-[0_8px_30px_rgba(26,140,140,0.5)] hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 cursor-pointer border-none"
       >
         {loading ? "Sending…" : "Submit & Get Started →"}
       </button>
 
       {/* Legal */}
-      <p className="mt-4 text-[var(--text-muted)] text-[0.72rem] leading-[1.6]">
+      <p className="mt-4 text-[rgba(255,255,255,0.25)] text-[0.7rem] leading-[1.6]">
         By submitting, you agree to our{" "}
-        <Link to="/privacy" className="text-[var(--accent)] no-underline hover:text-[var(--accent-bright)] transition-colors">
+        <Link to="/privacy" className="text-[var(--accent-bright)] no-underline hover:underline">
           Privacy Policy
         </Link>{" "}
         &{" "}
-        <Link to="/terms" className="text-[var(--accent)] no-underline hover:text-[var(--accent-bright)] transition-colors">
+        <Link to="/terms" className="text-[var(--accent-bright)] no-underline hover:underline">
           Terms of Service
         </Link>
       </p>
